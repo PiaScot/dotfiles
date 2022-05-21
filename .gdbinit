@@ -1,0 +1,22 @@
+
+# gdb-dashboard settings
+
+set history save
+set verbose off
+set print pretty on
+set print array off
+set print array-indexes on
+set python print-stack full
+ source /home/plum/.local/lib/gdb-dashboard/dashboard.py
+
+ python Dashboard.start()
+
+set disassembly-flavor intel
+# set disassembly-flavor att
+# File variables ---------------------------------------------------------------
+
+
+# vim: filetype=python
+# Local Variables:
+# mode: python
+#  source /home/plum/.local/lib/python3.8/site-packages/voltron/entry.py

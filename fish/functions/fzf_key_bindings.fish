@@ -1,0 +1,1 @@
+/home/plum/.fzf/install/shell/key-bindings.fish
