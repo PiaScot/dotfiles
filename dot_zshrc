@@ -1,34 +1,16 @@
-#
-# Executes commands at the start of an interactive session.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#
-
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# For zocide
-# When set to 1, z will print the matched directory before navigating to it.
 export _ZO_ECHO='1'
-export OPENAI_API_KEY='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'
 export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
 export LESS='-g -i -M -R -S -w -X -z-4 -j5'
 
 export VISUAL='vi'
-# export LANG=en_US.UTF-8
-# PATH=/home/plum/.local/bin:$PATH
 
-if [[ ! "$PATH" == */home/plum/.local/bin* ]]; then
-  PATH="${PATH:+${PATH}:}/home/plum/.local/bin"
-fi
-
-# add for MASTERING LINUX SHELL SCRIPT Exerices
-# TODO erase following after Exerices
-if [[ ! "$PATH" == */home/plum/bin* ]]; then
-  PATH="${PATH:+${PATH}:}/home/plum/bin"
+if [[ ! "$PATH" == *$HOME/.local/bin* ]]; then
+  PATH="${PATH:+${PATH}:}$HOME/.local/bin"
 fi
 
 autoload -Uz compinit && compinit
@@ -53,19 +35,16 @@ copy_to_windows() {
         exit 1
     fi
 
-    command cp -fr $1 /mnt/c/Users/CrCru/Downloads/
+    # TODO modify under dest directory
+    command cp -fr $1 "specify windows directory"
 
     if [ $# -ne 1 ]; then
         echo 'cannnot complet cp command'
         exit 2
     fi
 }
-alias cpwin=copy_to_windows
 
-# for crun
-#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
-# for sty
-#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
+alias cpwin=copy_to_windows
 
 eval "$(zoxide init zsh)"
 eval "$(direnv hook zsh)"
@@ -77,12 +56,6 @@ eval "$(gh completion -s zsh)"
 zle -N zi
 bindkey '^f' zi
 
-# when user input Ctrl-C key, the fzf is stopped by user input,
-# I want to implement it, so,
-# under cd_from_cwd function is to be exit terminal by reciving Ctrl-C key
-# So, I want the function is fzf mode instead of terminal
-# What should I rewrite under function?
-# 
 cd_from_cwd() {
     dir=$(find . -type d | fzf)
     if [[ -n $dir ]]; then
@@ -94,6 +67,5 @@ cd_from_cwd() {
     fi
 }
 
-# alias fcd="cd_from_cwd"
 zle -N cd_from_cwd
 bindkey '^k' cd_from_cwd
