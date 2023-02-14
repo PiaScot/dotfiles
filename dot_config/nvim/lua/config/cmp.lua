@@ -11,7 +11,6 @@ local cmp = require("cmp")
 
 snippy.setup({
 	enable_auto = true,
-
 	mappings = {
 		is = {
 			["<TAB>"] = "expand_or_advance",
@@ -32,13 +31,11 @@ vim.keymap.set("x", "<Tab>", mappings.cut_text, { remap = true })
 vim.keymap.set("n", "g<Tab>", mappings.cut_text, { remap = true })
 
 cmp.setup({
-
 	snippet = {
 		expand = function(args)
 			snippy.expand_snippet(args.body)
 		end,
 	},
-
 	mapping = {
 
 		["<C-n>"] = cmp.mapping(function(fallback)
@@ -68,7 +65,6 @@ cmp.setup({
 		["<C-e>"] = cmp.mapping({ i = cmp.mapping.abort(), c = cmp.mapping.close() }),
 		["<CR>"] = cmp.mapping.confirm({ select = false }),
 	},
-
 	sources = cmp.config.sources({
 		{ name = "nvim_lsp" },
 		-- { name = "vsnip" },
@@ -77,7 +73,6 @@ cmp.setup({
 		{ name = "snippy" },
 		-- { name = "rg" },
 	}),
-
 	formatting = {
 		format = lspkind.cmp_format({
 			mode = "symbol",
@@ -85,19 +80,18 @@ cmp.setup({
 			-- before = nil,
 		}),
 	},
+})
 
-	cmp.setup.cmdline("/", {
-		mapping = cmp.mapping.preset.cmdline(),
-		sources = {
-			{ name = "buffer" },
-		},
-	}),
-
-	cmp.setup.cmdline(":", {
-		mapping = cmp.mapping.preset.cmdline(),
-		sources = cmp.config.sources({
-			{ name = "path" },
-		}),
-		{ { name = "cmdline" } },
-	}),
+cmp.setup.cmdline(":", {
+	mapping = cmp.mapping.preset.cmdline(), -- important!
+	sources = {
+		{ name = "nvim_lua" },
+		{ name = "cmdline" },
+	},
+})
+cmp.setup.cmdline("/", {
+	mapping = cmp.mapping.preset.cmdline(), -- important!
+	sources = {
+		{ name = "buffer" },
+	},
 })

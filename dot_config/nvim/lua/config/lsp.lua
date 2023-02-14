@@ -107,9 +107,8 @@ require("mason-lspconfig").setup_handlers({
 	function(name)
 		lspconfig[name].setup({})
 	end,
-
-	["sumneko_lua"] = function()
-		lspconfig.sumneko_lua.setup({
+	["lua_ls"] = function()
+		lspconfig.lua_ls.setup({
 			settings = {
 				Lua = {
 					completion = {
@@ -126,7 +125,6 @@ require("mason-lspconfig").setup_handlers({
 			},
 		})
 	end,
-
 	["gopls"] = function()
 		lspconfig.gopls.setup({
 			settings = {
@@ -138,7 +136,6 @@ require("mason-lspconfig").setup_handlers({
 			},
 		})
 	end,
-
 	["pyright"] = function()
 		lspconfig.pyright.setup({
 			settings = {
@@ -154,7 +151,6 @@ require("mason-lspconfig").setup_handlers({
 			},
 		})
 	end,
-
 	["rust_analyzer"] = function()
 		rt.setup({
 			assist = {
@@ -207,9 +203,7 @@ nls.setup({
 			})
 		end
 	end,
-
 	capabilities = capabilities,
-
 	sources = {
 		nls.builtins.formatting.black,
 		nls.builtins.diagnostics.flake8.with({
