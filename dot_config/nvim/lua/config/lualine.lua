@@ -27,20 +27,24 @@ require("lualine").setup({
 	},
 	sections = {
 		lualine_a = { "mode" },
-		lualine_b = { "branch", "diff", "diagnostics" },
-		-- lualine_c = { "filename" },
+		lualine_b = { "branch", "diagnostics" },
 		lualine_c = {
 			{
 				"filename",
 				file_status = true,
-				path = 3,
+				path = 0,
 				shorting_target = 40,
 			},
 		},
 
 		lualine_x = { "encoding", "fileformat", "filetype" },
 		lualine_y = { "progress" },
-		lualine_z = { "location" },
+		-- lualine_z = { "location" },
+		lualine_z = {
+			function()
+				return " " .. os.date("%R")
+			end,
+		},
 	},
 	inactive_sections = {
 		lualine_a = {},
@@ -51,13 +55,18 @@ require("lualine").setup({
 			{
 				"filename",
 				file_status = true,
-				path = 3,
-				shorting_target = 40,
+				path = 2,
+				shorting_target = 20,
 			},
 		},
 		lualine_x = { "location" },
 		lualine_y = {},
-		lualine_z = {},
+		-- lualine_z = {},
+		lualine_z = {
+			function()
+				return " " .. os.date("%R")
+			end,
+		},
 	},
 	tabline = {},
 	winbar = {},

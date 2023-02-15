@@ -1,5 +1,14 @@
 local fn = vim.fn
 
+local notify = vim.notify
+vim.notify = function(msg, ...)
+	if msg:match("warning: multiple different client offset_encodings") then
+		return
+	end
+
+	notify(msg, ...)
+end
+
 local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
 if fn.empty(fn.glob(install_path)) > 0 then
 	PACKER_BOOTSTRAP = fn.system({
@@ -124,6 +133,7 @@ return packer.startup(function(use)
 		},
 		config = [[require('config.lsp')]],
 	})
+
 	use("aduros/ai.vim")
 
 	use({

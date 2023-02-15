@@ -14,6 +14,7 @@ local capabilities
 do
 	local default_capabilities = vim.lsp.protocol.make_client_capabilities()
 	capabilities = {
+		offsetEncoding = "utf-8",
 		textDocument = {
 			completion = {
 				completionItem = {
@@ -53,29 +54,6 @@ mason.setup({
 })
 
 require("mason-nvim-dap").setup({})
-
--- require("hover").setup({
--- 	init = function()
--- 		-- Require providers
--- 		require("hover.providers.lsp")
--- 		-- require('hover.providers.gh')
--- 		-- require('hover.providers.gh_user')
--- 		-- require('hover.providers.jira')
--- 		require("hover.providers.man")
--- 		require("hover.providers.dictionary")
--- 	end,
--- 	preview_opts = {
--- 		border = nil,
--- 	},
--- 	-- Whether the contents of a currently open hover window should be moved
--- 	-- to a :h preview-window when pressing the hover keymap.
--- 	preview_window = false,
--- 	title = true,
--- })
-
--- Setup keymaps
--- vim.keymap.set("n", "K", require("hover").hover, {desc = "hover.nvim"})
--- vim.keymap.set("n", "gK", require("hover").hover_select, {desc = "hover.nvim (select)"})
 
 vim.diagnostic.config({
 	virtual_text = false,
@@ -191,7 +169,10 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
 nls.setup({
+	-- capabilities = capabilities,
 	on_attach = function(client, bufnr)
+		-- client.offset_encodings = "utf-32"
+		client.offset_encoding = "utf-8"
 		if client.supports_method("textDocument/formatting") then
 			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
 			vim.api.nvim_create_autocmd("BufWritePre", {
@@ -203,7 +184,6 @@ nls.setup({
 			})
 		end
 	end,
-	capabilities = capabilities,
 	sources = {
 		nls.builtins.formatting.black,
 		nls.builtins.diagnostics.flake8.with({
@@ -212,10 +192,10 @@ nls.setup({
 		}),
 		nls.builtins.diagnostics.shellcheck,
 		nls.builtins.formatting.shfmt,
-		nls.builtins.formatting.clang_format,
-		-- nls.builtins.formatting.clang_format.with({
-		--     extra_args = { '--style=file:"/home/plum/.clang-format' },
-		-- }),
+		-- nls.builtins.formatting.clang_format,
+		nls.builtins.formatting.clang_format.with({
+			extra_args = { '--style=file:"/home/plum/.clang-format' },
+		}),
 		-- nls.builtins.code_actions.gitsigns,
 		-- nls.builtins.formatting.gofmt,
 		-- nls.builtins.formatting.gofumpt,
