@@ -1,6 +1,6 @@
 local cmd = vim.cmd
 
-cmd([[command! Nvimrc :e ~/.config/nvim/init.vim]])
+cmd([[command! Nvimrc :e ~/.config/nvim/init.lua]])
 cmd([[command! Toml :e ~/.config/nvim/lua/plugin.lua]])
 
 cmd([[command! PackerInstall packadd packer.nvim | lua require('plugins').install()]])

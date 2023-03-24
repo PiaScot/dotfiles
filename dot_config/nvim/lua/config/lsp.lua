@@ -6,15 +6,14 @@ local rt = require("rust-tools")
 local nls = require("null-ls")
 
 require("neodev").setup({
-	library = { plugins = { "nvim-dap-ui" }, types = true },
+	-- library = { plugins = { "nvim-dap-ui" }, types = true },
 })
--- local cmp_capabilities = cmp_nvim_lsp.default_capabilities()
 
 local capabilities
 do
 	local default_capabilities = vim.lsp.protocol.make_client_capabilities()
 	capabilities = {
-		offsetEncoding = "utf-8",
+		offsetEncoding = "utf-16",
 		textDocument = {
 			completion = {
 				completionItem = {
@@ -53,13 +52,24 @@ mason.setup({
 	},
 })
 
+require("mason-lspconfig").setup({
+	ensure_installed = {
+		"lua_ls",
+		"rust_analyzer",
+		"gopls",
+		"pyright",
+		"jsonls",
+	},
+	automatic_installation = true,
+})
+
 require("mason-nvim-dap").setup({})
 
 vim.diagnostic.config({
 	virtual_text = false,
 	signs = true,
 	underline = false,
-	update_in_insert = false,
+	update_in_insert = true,
 	severity_sort = false,
 })
 
@@ -74,6 +84,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		-- bufmap("n", "K", '<cmd>lua require("hover").hover, { desc = "hover.nvim" }<cr>')
 		bufmap("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>")
 		bufmap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>")
+		-- bufmap("n", "gd", "<cmd>Telescope lsp_definitions<cr>")
 		bufmap("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>")
 		bufmap("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>")
 		bufmap("n", "<C-k>", "<cmd>lua vim.diagnostic.goto_prev()<cr>")
@@ -103,6 +114,9 @@ require("mason-lspconfig").setup_handlers({
 			},
 		})
 	end,
+	-- ["millet_ls"] = function()
+	-- 	lspconfig.millet.setup({})
+	-- end,
 	["gopls"] = function()
 		lspconfig.gopls.setup({
 			settings = {
@@ -162,6 +176,8 @@ require("mason-lspconfig").setup_handlers({
 	end,
 })
 
+require("lspconfig").millet.setup({})
+
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
 	border = "rounded",
 })
@@ -172,7 +188,7 @@ nls.setup({
 	-- capabilities = capabilities,
 	on_attach = function(client, bufnr)
 		-- client.offset_encodings = "utf-32"
-		client.offset_encoding = "utf-8"
+		-- client.offset_encoding = "utf-8"
 		if client.supports_method("textDocument/formatting") then
 			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
 			vim.api.nvim_create_autocmd("BufWritePre", {
