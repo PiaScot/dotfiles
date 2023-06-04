@@ -43,7 +43,6 @@ util.default_config = vim.tbl_deep_extend("force", util.default_config, {
 
 mason.setup({
 	ui = {
-
 		icons = {
 			package_installed = "✓",
 			package_pending = "➜",
@@ -210,7 +209,7 @@ nls.setup({
 		nls.builtins.formatting.shfmt,
 		-- nls.builtins.formatting.clang_format,
 		nls.builtins.formatting.clang_format.with({
-			extra_args = { '--style=file:"/home/plum/.clang-format' },
+			extra_args = { '--style=file:"$HOME/.clang-format' },
 		}),
 		-- nls.builtins.code_actions.gitsigns,
 		-- nls.builtins.formatting.gofmt,

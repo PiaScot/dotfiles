@@ -3,7 +3,7 @@ rr = "run --release"
 
 [build]
 jobs = 4
-rustc-wrapper = "/home/plum/.cargo/bin/sccache"
+rustc-wrapper = "$HOME/.cargo/bin/sccache"
 
 
 [target.x86_64-unknown-linux-gnu]
