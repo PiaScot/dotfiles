@@ -1,13 +1,20 @@
+#
+# Executes commands at the start of an interactive session.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-export _ZO_ECHO='1'
-export TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
+# Customize to your needs...
 export LESS='-g -i -M -R -S -w -X -z-4 -j5'
-
 export VISUAL='vi'
+export GDK_BACKEND=x11
+export WSLENV=$GDK_BACKEND
 
 if [[ ! "$PATH" == *$HOME/.local/bin* ]]; then
   PATH="${PATH:+${PATH}:}$HOME/.local/bin"
@@ -22,7 +29,8 @@ alias el='exa -l'
 alias tk='tmux kill-pane'
 alias tconf='nvim ~/.tmux.conf'
 alias nvimrc='nvim ~/.config/nvim/init.lua'
-alias toml='nvim ~/.config/nvim/lua/plugin.lua'
+# alias toml='nvim ~/.config/nvim/lua/plugin.lua'
+alias toml='nvim ~/.config/nvim/lua/plugins.lua'
 alias pvenv='python3 -m venv'
 alias pdb='python3 -m pdb'
 alias pypro="python3 -m venv venv && echo \"source venv/bin/activate\nunset PS1\" > .envrc && direnv allow ."
@@ -48,24 +56,22 @@ alias cpwin=copy_to_windows
 
 eval "$(zoxide init zsh)"
 eval "$(direnv hook zsh)"
-eval "$(dircolors -b ~/.dircolors)"
+eval "$(starship init zsh)"
+# eval "$(dircolors -b ~/.dircolors)"
 eval "$(gh completion -s zsh)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 zle -N zi
 bindkey '^f' zi
+bindkey -e
 
-cd_from_cwd() {
-    dir=$(find . -type d | fzf)
-    if [[ -n $dir ]]; then
-        builtin cd $dir
-        pwd
-    else
-        echo 'please select dir you want to change it.'
-        exit 1
-    fi
-}
-
-zle -N cd_from_cwd
-bindkey '^k' cd_from_cwd
+# if [[ ! "$PATH" == *$HOME/perl5/bin* ]]; then
+#   PATH="$HOME/perl5/bin${PATH:+:${PATH}}"
+# fi
+#
+# PERL5LIB="$HOME/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+# export PERL5LIB="${PERL5LIB:+$PERL5LIB:}$HOME/perl5/lib/perl5"
+# export PERL_LOCAL_LIB_ROOT="${PERL_LOCAL_LIB_ROOT:+$PERL_LOCAL_LIB_ROOT:}$HOME/perl5"
+# export PERL_MB_OPT="--install_base '$HOME/perl5'"
+# export PERL_MM_OPT="INSTALL_BASE='$HOME/perl5'"
