@@ -1,6 +1,4 @@
 
-# gdb-dashboard settings
-
 set history save
 set verbose off
 set print pretty on
