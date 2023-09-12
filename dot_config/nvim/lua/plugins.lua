@@ -1,10 +1,16 @@
 return {
 	{
 		"rebelot/kanagawa.nvim",
-		"nvim-tree/nvim-web-devicons",
-		"nvim-treesitter/nvim-treesitter",
 		"nvim-lua/popup.nvim",
 		"nvim-lua/plenary.nvim",
+		-- for KLD syntax highlight
+		"imsnif/kdl.vim",
+	},
+	{
+		"nvim-tree/nvim-web-devicons",
+		config = function()
+			require("nvim-web-devicons").setup({ default = true })
+		end,
 	},
 
 	{
@@ -16,10 +22,11 @@ return {
 		config = true,
 	},
 	{
-		"edkolev/tmuxline.vim",
+		"tpope/vim-surround",
 	},
 	{
-		"tpope/vim-surround",
+		"stevearc/dressing.nvim",
+		opts = {},
 	},
 	{
 		"ellisonleao/glow.nvim",
@@ -30,7 +37,7 @@ return {
 		"lukas-reineke/indent-blankline.nvim",
 		config = function()
 			require("indent_blankline").setup({
-				show_current_context = true,
+				show_current_context = false,
 			})
 		end,
 	},

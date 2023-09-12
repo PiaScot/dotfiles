@@ -1,6 +1,5 @@
-require("impatient")
 require("option")
-require("keymap")
 require("command")
-require("plugin")
+require("keymap")
+require("lazy_nvim")
 require("colorscheme")

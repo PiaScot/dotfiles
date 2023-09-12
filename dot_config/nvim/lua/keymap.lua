@@ -1,30 +1,6 @@
--- local map = vim.keymap.set
---
--- -- local opts = { silent = true }
---
--- map("n", ";", ":")
--- map("n", "<C-p>", ":bprev<CR>")
--- map("n", "<C-n>", ":bnext<CR>")
---
--- map("n", "ss", "<C-w>s")
--- map("n", "sv", "<C-w>v")
--- map("n", "sh", "<C-w>h")
--- map("n", "sj", "<C-w>j")
--- map("n", "sk", "<C-w>k")
--- map("n", "sl", "<C-w>l")
--- map("n", "sq", "<C-w>q")
--- map("n", "sH", "<C-w>H")
--- map("n", "sL", "<C-w>L")
--- map("n", "sJ", "<C-w>J")
--- map("n", "sK", "<C-w>K")
---
--- map("i", "jj", "<ESC>")
--- map("t", "JJ", "<C-\\><C-n>")
---
 local silent = { noremap = true, silent = true }
 local map = vim.api.nvim_set_keymap
 
--- vim.keymap.set("n", ";", ":")
 map("n", ";", ":", { noremap = true })
 map("n", ":", ";", { noremap = true })
 

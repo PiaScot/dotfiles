@@ -1,7 +1,6 @@
 vim.g.do_filetype_lua = 1
-vim.g.did_load_filetypes = 0
 
-vim.g.python3_host_prog = "/usr/sbin/python3"
+vim.g.python3_host_prog = "/usr/bin/python3"
 
 local disabled_build_ins = {
 	"netrw",
@@ -32,8 +31,8 @@ for _, plugin in pairs(disabled_build_ins) do
 	vim.g["loaded_" .. plugin] = 1
 end
 
--- vim.opt.number = true
-vim.opt.relativenumber = true
+vim.opt.number = true
+-- vim.opt.relativenumber = true
 
 -- not distinguish search command(/) big character or small character
 vim.opt.ignorecase = true
@@ -80,6 +79,15 @@ vim.opt.pumblend = 10
 -- to be transparency background is :hi Normal guibg=NONE
 vim.opt.termguicolors = true
 
+-- enable showing non-printing-character
+-- such as [space],[tab],[newline],...
+-- not using to no use indent_blankline
+vim.opt.list = false
+
+-- 	A comma-separated list of options for Insert mode completion
+-- default: "menu,preview"
+vim.opt.completeopt = { "menu", "menuone", "noselect" }
+
 if vim.fn.has("wsl") then
 	vim.g.clipboard = {
 		name = "wsl_clipboard",
@@ -93,8 +101,9 @@ if vim.fn.has("wsl") then
 		},
 		cache_enabled = 1,
 	}
-	vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
 end
+
+vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
 
 local autocmd = vim.api.nvim_create_autocmd
 
@@ -105,12 +114,12 @@ autocmd("BufEnter", {
 })
 
 -- jump to previous buffer line
-autocmd({ "BufReadPost" }, {
-	pattern = { "*" },
-	callback = function()
-		vim.api.nvim_exec('silent! normal! g`"zv', false)
-	end,
-})
+-- autocmd({ "BufReadPost" }, {
+-- 	pattern = { "*" },
+-- 	callback = function()
+-- 		vim.api.nvim_exec('silent! normal! g`"zv', false)
+-- 	end,
+-- })
 
 -- can close q key with under filetype
 autocmd("Filetype", {
@@ -127,10 +136,69 @@ autocmd("Filetype", {
 	end,
 })
 
--- highlight_yank but it is subtle...
--- vim.api.nvim_create_autocmd("TextYankPost", {
--- 	group = vim.api.nvim_create_augroup("highlight_yank", { clear = true }),
--- 	callback = function()
--- 		vim.highlight.on_yank()
--- 	end,
+vim.api.nvim_create_autocmd("TextYankPost", {
+	callback = function()
+		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
+	end,
+})
+
+vim.api.nvim_create_autocmd(
+	{ "BufRead", "BufNewFile" },
+	{ pattern = "*/node_modules/*", command = "lua vim.diagnostic.disable(0)" }
+)
+
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+	pattern = { "*.md", "*.tex" },
+	command = "setlocal spell",
+})
+
+-- vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+-- 	pattern = { "*.txt", "*md", "*.json" },
+-- 	command = "setlocal conceallevel = 0",
 -- })
+
+local present, _ = pcall(require, "which-key")
+if not present then
+	return
+end
+local _, pwk = pcall(require, "plugins.which-key")
+
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = "*.md",
+	callback = function()
+		pwk.attach_markdown(0)
+	end,
+})
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = { "*.ts", "*.tsx" },
+	callback = function()
+		pwk.attach_typescript(0)
+	end,
+})
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = { "package.json" },
+	callback = function()
+		pwk.attach_npm(0)
+	end,
+})
+
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = { "*test.js", "*test.ts", "*test.tsx" },
+	callback = function()
+		pwk.attach_jest(0)
+	end,
+})
+
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = "spectre_panel",
+	callback = function()
+		pwk.attach_spectre(0)
+	end,
+})
+
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = "NvimTree",
+	callback = function()
+		pwk.attach_nvim_tree(0)
+	end,
+})

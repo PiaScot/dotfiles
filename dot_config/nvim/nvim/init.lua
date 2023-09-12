@@ -1,5 +1,0 @@
-require("option")
-require("command")
-require("keymap")
-require("lazy_nvim")
-require("colorscheme")

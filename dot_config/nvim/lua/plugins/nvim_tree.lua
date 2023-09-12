@@ -4,6 +4,7 @@ return {
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
 	},
+	-- config = true,
 	config = function()
 		local function on_attach(bufnr)
 			local api = require("nvim-tree.api")
@@ -65,8 +66,6 @@ return {
 			vim.keymap.set("n", "x", api.fs.cut, opts("Cut"))
 			vim.keymap.set("n", "y", api.fs.copy.filename, opts("Copy Name"))
 			vim.keymap.set("n", "Y", api.fs.copy.relative_path, opts("Copy Relative Path"))
-			vim.keymap.set("n", "<2-LeftMouse>", api.node.open.edit, opts("Open"))
-			vim.keymap.set("n", "<2-RightMouse>", api.tree.change_root_to_node, opts("CD"))
 			-- END_DEFAULT_ON_ATTACH
 
 			-- Mappings removed via:
@@ -102,14 +101,38 @@ return {
 				group_empty = true,
 			},
 		})
-		--
 
-		local function open_nvim_tree()
-			-- open the tree
-			require("nvim-tree.api").tree.toggle({ focus = false, find_file = true })
+		local function open_nvim_tree_with_project()
+			local current_dir = vim.fn.expand("%:p:h")
+			local project_files = {
+				"Cargo.toml",
+				"Cargo.lock",
+				".git",
+				".gitignore",
+				".npmrc",
+				"package.json",
+			}
+
+			for i = 0, 1 do
+				local dir_to_check = current_dir
+				for _ = 1, i do
+					dir_to_check = dir_to_check .. "/.."
+				end
+				dir_to_check = vim.fn.expand(dir_to_check)
+
+				for _, file in ipairs(project_files) do
+					if
+						vim.fn.filereadable(vim.fn.expand(dir_to_check .. "/" .. file)) == 1
+						or vim.fn.isdirectory(vim.fn.expand(dir_to_check .. "/" .. file)) == 1
+					then
+						require("nvim-tree.api").tree.toggle({ focus = false, find_file = true })
+						return
+					end
+				end
+			end
 		end
 
-		vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
+		vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree_with_project })
 
 		local function tab_win_closed(winnr)
 			local api = require("nvim-tree.api")
@@ -131,7 +154,11 @@ return {
 					if last_buf_info.name:match(".*NvimTree_%d*$") then -- and that buffer is nvim tree
 						vim.schedule(function()
 							if #vim.api.nvim_list_wins() == 1 then -- if its the last buffer in vim
-								vim.cmd("quit") -- then close all of vim
+								if vim.fn.getbufinfo(bufnr)[1].changed == 1 then
+									vim.cmd("confirm quit")
+								else
+									vim.cmd("quit")
+								end
 							else -- else there are more tabs open
 								vim.api.nvim_win_close(tab_wins[1], true) -- then close only the tab
 							end
@@ -148,6 +175,8 @@ return {
 			end,
 			nested = true,
 		})
+
+		vim.keymap.set("n", "<leader>a", ":NvimTreeToggle<CR>", { noremap = true, silent = true })
 	end,
 }
 -- return {}
