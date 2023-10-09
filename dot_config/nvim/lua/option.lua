@@ -56,14 +56,14 @@ vim.opt.signcolumn = "yes:1"
 -- use space instead of space
 vim.opt.expandtab = true
 
--- it treat 4 space as <TAB> in file
-vim.opt.tabstop = 4
+-- it treat 2 space as <TAB> in file
+vim.opt.tabstop = 2
 
--- it treat 4 space in editing file
-vim.opt.softtabstop = 4
+-- it treat 2 space in editing file
+vim.opt.softtabstop = 2
 
--- it treat 4 space on indent
-vim.opt.shiftwidth = 4
+-- it treat 2 space on indent
+vim.opt.shiftwidth = 2
 
 -- round shiftwidth x times in indent lines
 vim.opt.shiftround = true

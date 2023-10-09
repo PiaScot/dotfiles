@@ -12,6 +12,7 @@ return {
 				"vue",
 				"astro",
 				"svelte",
+				"go",
 				"gitcommit",
 				"graphql",
 				"json",

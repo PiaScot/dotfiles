@@ -12,7 +12,7 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup("plugins", {
+local lazy_opts = {
 	change_detection = {
 		notify = false,
 	},
@@ -22,4 +22,6 @@ require("lazy").setup("plugins", {
 		-- none or single or double or rounded or solid or shadow
 		-- or array type that need 8-parameter or any divisor of eight
 	},
-})
+}
+
+require("lazy").setup("plugins", lazy_opts)
