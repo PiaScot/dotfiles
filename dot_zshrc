@@ -1,20 +1,11 @@
-#
-# Executes commands at the start of an interactive session.
-#
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
-# Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
 export LESS='-g -i -M -R -S -w -X -z-4 -j5'
 export VISUAL='vi'
-export GDK_BACKEND=x11
-export WSLENV=$GDK_BACKEND
 
 if [[ ! "$PATH" == *$HOME/.local/bin* ]]; then
   PATH="${PATH:+${PATH}:}$HOME/.local/bin"
@@ -37,33 +28,22 @@ alias pypro="python3 -m venv venv && echo \"source venv/bin/activate\nunset PS1\
 alias cr='cargo run'
 alias cb='cargo build'
 
-copy_to_windows() {
-    if [ -z $1 ] || [ ! -e $1 ]; then
-        echo "Please specify exist directory or file"
-        exit 1
-    fi
-
-    # TODO modify under dest directory
-    command cp -fr $1 "specify windows directory"
-
-    if [ $# -ne 1 ]; then
-        echo 'cannnot complet cp command'
-        exit 2
-    fi
-}
-
 alias cpwin=copy_to_windows
 
 eval "$(zoxide init zsh)"
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
 # eval "$(dircolors -b ~/.dircolors)"
-eval "$(gh completion -s zsh)"
+# eval "$(gh completion -s zsh)"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-zle -N zi
-bindkey '^f' zi
+change_history_directory() {
+  __zoxide_zi
+  zle reset-prompt
+}
+
+zle -N change_history_directory
+bindkey '^f' change_history_directory
 bindkey -e
 
 # if [[ ! "$PATH" == *$HOME/perl5/bin* ]]; then
@@ -75,3 +55,5 @@ bindkey -e
 # export PERL_LOCAL_LIB_ROOT="${PERL_LOCAL_LIB_ROOT:+$PERL_LOCAL_LIB_ROOT:}$HOME/perl5"
 # export PERL_MB_OPT="--install_base '$HOME/perl5'"
 # export PERL_MM_OPT="INSTALL_BASE='$HOME/perl5'"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
