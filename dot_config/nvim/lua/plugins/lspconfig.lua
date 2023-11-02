@@ -79,6 +79,10 @@ return {
 
     require("mason-lspconfig").setup({
       ensure_installed = {
+        "gopls",
+        -- "gofumpt",
+        -- "golangci_lint",
+        -- "stylua",
         "rust_analyzer",
         "pyright",
         "jsonls",

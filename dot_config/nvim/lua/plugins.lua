@@ -32,8 +32,14 @@ return {
 		end,
 	},
 	{
+		"windwp/nvim-autopairs",
+		config = function()
+			require("nvim-autopairs").setup({})
+		end,
+	},
+	{
 		"nvim-telescope/telescope.nvim",
-		tag = "0.1.1",
+		tag = "0.1.4",
 		dependencies = { "nvim-lua/plenary.nvim" },
 		config = function()
 			local builtin = require("telescope.builtin")
@@ -75,6 +81,7 @@ return {
 			"nvim-lua/plenary.nvim",
 		},
 	},
+
 	{
 		{
 			"akinsho/toggleterm.nvim",
@@ -90,11 +97,6 @@ return {
 				vim.api.nvim_set_keymap("n", "<leader>t", ":ToggleTerm<CR>", { noremap = true, silent = true })
 			end,
 		},
-	},
-
-	{
-		"ojroques/nvim-bufdel",
-		config = true,
 	},
 	{
 		"simrat39/symbols-outline.nvim",

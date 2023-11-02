@@ -44,7 +44,8 @@ vim.opt.laststatus = 2
 vim.opt.textwidth = 80
 
 -- always focus cursor on middle center
-vim.opt.scrolloff = 999
+-- no now
+vim.opt.scrolloff = 4
 
 -- default is 4000 so change to 300
 -- it is grace time to write disk from swap file the time has not input
@@ -157,44 +158,46 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 -- 	command = "setlocal conceallevel = 0",
 -- })
 
-local present, _ = pcall(require, "which-key")
-if not present then
-	return
-end
-local _, pwk = pcall(require, "plugins.which-key")
+-- local present, _ = pcall(require, "which-key")
+-- if not present then
+-- 	return
+-- end
 
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "*.md",
-	callback = function()
-		pwk.attach_markdown(0)
-	end,
-})
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = { "*.ts", "*.tsx" },
-	callback = function()
-		pwk.attach_typescript(0)
-	end,
-})
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = { "package.json" },
-	callback = function()
-		pwk.attach_npm(0)
-	end,
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = { "*test.js", "*test.ts", "*test.tsx" },
-	callback = function()
-		pwk.attach_jest(0)
-	end,
-})
-
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "spectre_panel",
-	callback = function()
-		pwk.attach_spectre(0)
-	end,
-})
+-- local _, pwk = pcall(require, "plugins.which-key")
+--
+-- vim.api.nvim_create_autocmd("BufEnter", {
+-- 	pattern = "*.md",
+-- 	callback = function()
+-- 		pwk.attach_markdown(0)
+-- 	end,
+-- })
+--
+-- vim.api.nvim_create_autocmd("BufEnter", {
+-- 	pattern = { "*.ts", "*.tsx" },
+-- 	callback = function()
+-- 		pwk.attach_typescript(0)
+-- 	end,
+-- })
+-- vim.api.nvim_create_autocmd("BufEnter", {
+-- 	pattern = { "package.json" },
+-- 	callback = function()
+-- 		pwk.attach_npm(0)
+-- 	end,
+-- })
+--
+-- vim.api.nvim_create_autocmd("BufEnter", {
+-- 	pattern = { "*test.js", "*test.ts", "*test.tsx" },
+-- 	callback = function()
+-- 		pwk.attach_jest(0)
+-- 	end,
+-- })
+--
+-- vim.api.nvim_create_autocmd("BufEnter", {
+-- 	pattern = "spectre_panel",
+-- 	callback = function()
+-- 		pwk.attach_spectre(0)
+-- 	end,
+-- })
 
 vim.api.nvim_create_autocmd("BufEnter", {
 	pattern = "NvimTree",
@@ -202,3 +205,17 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		pwk.attach_nvim_tree(0)
 	end,
 })
+
+-- disable neovim background color
+-- do transparency background
+vim.cmd[[
+  augroup TransparentBG
+    autocmd!
+    autocmd Colorscheme * highlight Normal guibg=none
+    autocmd Colorscheme * highlight NonText ctermbg=none
+    autocmd Colorscheme * highlight LineNr ctermbg=none
+    autocmd Colorscheme * highlight Folded ctermbg=none
+    autocmd Colorscheme * highlight EndOfBuffer ctermbg=none
+  augroup END
+]]
+

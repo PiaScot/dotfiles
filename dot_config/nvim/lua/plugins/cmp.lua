@@ -7,7 +7,6 @@ return {
 		"hrsh7th/cmp-nvim-lsp",
 		"onsails/lspkind.nvim",
 		"hrsh7th/cmp-nvim-lsp-signature-help",
-		"windwp/nvim-autopairs",
 		"dcampos/nvim-snippy",
 		"dcampos/cmp-snippy",
 		"honza/vim-snippets",
@@ -21,8 +20,6 @@ return {
 		local cmp = require("cmp")
 		local snippy = require("snippy")
 		local lspkind = require("lspkind")
-
-		require("nvim-autopairs").setup({})
 
 		snippy.setup({
 			enable_auto = true,
@@ -40,13 +37,13 @@ return {
 		cmp.setup({
 			snippet = {
 				expand = function(args)
-					require("snippy").expand_snippet(args.body) -- For `snippy` users.
+					require("snippy").expand_snippet(args.body)
 				end,
 			},
-			window = {
-				-- completion = cmp.config.window.bordered(),
-				-- documentation = cmp.config.window.bordered(),
-			},
+			-- window = {
+			-- 	-- completion = cmp.config.window.bordered(),
+			-- 	-- documentation = cmp.config.window.bordered(),
+			-- },
 			mapping = cmp.mapping.preset.insert({
 				["<C-n>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then
@@ -93,22 +90,15 @@ return {
 				-- { name = 'luasnip' }, -- For luasnip users.
 				-- { name = 'ultisnips' }, -- For ultisnips users.
 				{ name = "snippy" }, -- For snippy users.
-			}, {
 				{ name = "buffer" },
+				-- }, {
+				-- 	{ name = "buffer" },
+				-- }),
 			}),
 		})
 
-		-- Set configuration for specific filetype.
-		-- cmp.setup.filetype("gitcommit", {
-		-- 	sources = cmp.config.sources({
-		-- 		{ name = "cmp_git" }, -- You can specify the `cmp_git` source if you were installed it.
-		-- 	}, {
-		-- 		{ name = "buffer" },
-		-- 	}),
-		-- })
-
 		cmp.setup.cmdline(":", {
-			mapping = cmp.mapping.preset.cmdline(), -- important!
+			mapping = cmp.mapping.preset.cmdline(),
 			sources = {
 				{ name = "nvim_lua" },
 				{ name = "cmdline" },
@@ -116,12 +106,12 @@ return {
 		})
 
 		cmp.setup.cmdline("/", {
-			mapping = cmp.mapping.preset.cmdline(), -- important!
+			mapping = cmp.mapping.preset.cmdline(),
 			sources = {
 				{ name = "buffer" },
 			},
 		})
-		local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-		cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+		-- local cmp_autopairs = require("nvim-autopairs.completion.cmp")
+		-- cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 	end,
 }
