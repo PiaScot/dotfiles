@@ -2,6 +2,7 @@ return {
 	"nvim-treesitter/nvim-treesitter",
 	event = "BufReadPre",
 	config = function()
+		require("nvim-dap-virtual-text").setup()
 		require("nvim-treesitter.configs").setup({
 			ensure_installed = {
 				"tsx",
@@ -44,10 +45,10 @@ return {
 				enable = true,
 			},
 
-			context_commentstring = {
-				enable = true,
-				enable_autocmd = false,
-			},
+			-- context_commentstring = {
+			-- 	enable = true,
+			-- 	enable_autocmd = false,
+			-- },
 
 			textobjects = {
 				move = {
@@ -99,11 +100,14 @@ return {
 				},
 			},
 		})
+
 	end,
 	dependencies = {
 		"hiphish/rainbow-delimiters.nvim",
 		"JoosepAlviste/nvim-ts-context-commentstring",
 		"nvim-treesitter/nvim-treesitter-textobjects",
 		"RRethy/nvim-treesitter-textsubjects",
+		"mfussenegger/nvim-dap",
+		"theHamsta/nvim-dap-virtual-text",
 	},
 }

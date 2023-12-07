@@ -1,5 +1,6 @@
+-- vim.cmd([[colorscheme kanagawa-dragon]])
 vim.cmd([[colorscheme kanagawa]])
 -- vim.cmd([[colorscheme tokyonight-moon]])
 -- vim.cmd([[colorscheme nightfox]])
-
-
+-- vim.cmd([[colorscheme onedark_vivid]])
+-- vim.cmd([[colorscheme gruvbox]])

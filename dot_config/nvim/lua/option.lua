@@ -57,14 +57,14 @@ vim.opt.signcolumn = "yes:1"
 -- use space instead of space
 vim.opt.expandtab = true
 
--- it treat 2 space as <TAB> in file
-vim.opt.tabstop = 2
+-- it treat 4 space as <TAB> in file
+vim.opt.tabstop = 4
 
--- it treat 2 space in editing file
-vim.opt.softtabstop = 2
+-- it treat 4 space in editing file
+vim.opt.softtabstop = 4
 
--- it treat 2 space on indent
-vim.opt.shiftwidth = 2
+-- it treat 4 space on indent
+vim.opt.shiftwidth = 4
 
 -- round shiftwidth x times in indent lines
 vim.opt.shiftround = true
@@ -199,23 +199,24 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 -- 	end,
 -- })
 
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "NvimTree",
-	callback = function()
-		pwk.attach_nvim_tree(0)
-	end,
-})
+-- vim.api.nvim_create_autocmd("BufEnter", {
+-- 	pattern = "NvimTree",
+-- 	callback = function()
+-- 		pwk.attach_nvim_tree(0)
+-- 	end,
+-- })
 
 -- disable neovim background color
 -- do transparency background
-vim.cmd[[
-  augroup TransparentBG
-    autocmd!
-    autocmd Colorscheme * highlight Normal guibg=none
-    autocmd Colorscheme * highlight NonText ctermbg=none
-    autocmd Colorscheme * highlight LineNr ctermbg=none
-    autocmd Colorscheme * highlight Folded ctermbg=none
-    autocmd Colorscheme * highlight EndOfBuffer ctermbg=none
-  augroup END
-]]
-
+-- WARNING!!
+-- under options is enabled, the inactive windows is dimmed.
+-- vim.cmd[[
+--   augroup TransparentBG
+--     autocmd!
+--     autocmd Colorscheme * highlight Normal guibg=none
+--     autocmd Colorscheme * highlight NonText ctermbg=none
+--     autocmd Colorscheme * highlight LineNr ctermbg=none
+--     autocmd Colorscheme * highlight Folded ctermbg=none
+--     autocmd Colorscheme * highlight EndOfBuffer ctermbg=none
+--   augroup END
+-- ]]
