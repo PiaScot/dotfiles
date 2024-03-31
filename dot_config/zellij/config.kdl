@@ -1,0 +1,48 @@
+keybinds clear-defaults=true {
+    tmux {
+        bind "[" { SwitchToMode "Scroll"; }
+        bind "Ctrl b" { Write 2; SwitchToMode "Normal"; }
+        bind "-" { NewPane "Down"; SwitchToMode "Normal"; }
+        bind "|" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
+        bind "c" { NewTab; SwitchToMode "Normal"; }
+        bind "," { SwitchToMode "RenameTab"; }
+        bind "p" { GoToPreviousTab; SwitchToMode "Normal"; }
+        bind "n" { GoToNextTab; SwitchToMode "Normal"; }
+        bind "h" { MoveFocus "Left"; SwitchToMode "Normal"; }
+        bind "l" { MoveFocus "Right"; SwitchToMode "Normal"; }
+        bind "j" { MoveFocus "Down"; SwitchToMode "Normal"; }
+        bind "k" { MoveFocus "Up"; SwitchToMode "Normal"; }
+        bind "o" { FocusNextPane; }
+        bind "d" { Detach; }
+        bind "Space" { NextSwapLayout; }
+        bind "x" { CloseFocus; SwitchToMode "Normal"; }
+    }
+
+    shared_except "tmux" "locked" {
+        bind "Ctrl b" { SwitchToMode "Tmux"; }
+    }
+}
+
+simplified_ui true
+
+themes {
+    kanagawa {
+        fg "#DCD7BA"
+        bg "#1F1F28"
+        red "#C34043"
+        green "#76946A"
+        yellow "#FF9E3B"
+        blue "#7E9CD8"
+        magenta "#957FB8"
+        orange "#FFA066"
+        cyan "#7FB4CA"
+        black "#16161D"
+        white "#DCD7BA"
+    }
+}
+
+theme "kanagawa"
+default_layout "compact"
+scrollback_editor "/usr/bin/vim"
+styled_underlines false
