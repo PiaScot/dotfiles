@@ -1,5 +1,7 @@
 #!/bin/env bash
 
+set -eu
+
 # check installed xxx command
 check_install_command() {
 	local cmd="$1"
@@ -83,53 +85,26 @@ install_cmd_from_github() {
 
 }
 
-install_eza() {
-	local eza_url=$(get_latest_github "https://github.com/eza-community/eza" "x86_64.*?-linux-gnu.tar.gz$")
-	# echo "$eza_url"
-	wget "$eza_url" -P "$HOME/tmp" && tar -xvf "$HOME/tmp/eza_x86_64-unknown-linux-gnu.tar.gz"
-
-	if [ -f "$HOME/tmp/eza" ]; then
-		mkdir -p "$HOME/.local/bin/" && mv "$HOME/tmp/eza" "$HOME/.local/bin/"
-	else
-		echo "Not found bin file $HOME/tmp/eza"
-		exit 1
-	fi
+install_zoxide() {
+	curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
 }
 
-install_mold() {
-	local mold_url=$(get_latest_github "https://github.com/rui314/mold" "x86_64-linux.tar.gz$")
-	local fname=$(basename "$mold_url")
-	local dirname=$(echo "$fname" | sed 's/\.tar\.gz$//')
-
-	wget "$mold_url" -P "$HOME/tmp" && tar -xvf "$HOME/tmp/$fname"
-
-	if [ -f "$HOME/tmp/$dirname/bin/mold" ]; then
-		# echo "$HOME/tmp/$dirname/bin/mold"
-		mkdir -p "$HOME/.local/bin/" && mv "$HOME/tmp/$dirname/bin/mold" "$HOME/.local/bin/"
-	else
-		echo "Not found bin file $HOME/tmp/$dirname/bin/mold"
-		exit 1
-	fi
-
+install_fzf() {
+	git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
 }
 
-# https://github.com/mozilla/sccache/releases/download/v0.7.7/sccache-v0.7.7-x86_64-unknown-linux-musl.tar.gz
-install_sccache() {
-	local sccache_url=$(get_latest_github "https://github.com/mozilla/sccache", "x86_64-unknown-linux-musl.tar.gz$")
-	local fname=$(basename "$sccache_url")
-	local dirname$(echo "$fname" | sed 's/\.tar\.gz$//')
-
-	wget "$sccache_url" -P "$HOME/tmp" && tar -xvf "$HOME/tmp/$fname"
+install_direnv() {
+	curl -sfL https://direnv.net/install.sh | bash
 }
-
-# install_eza
-# install_mold
 
 install_cmd() {
 	install_essential_command
 	install_cmd_from_github "https://github.com/eza-community/eza" "x86_64.*?-linux-gnu.tar.gz$"
 	install_cmd_from_github "https://github.com/rui314/mold" "x86_64-linux.tar.gz$"
 	install_cmd_from_github "https://github.com/mozilla/sccache", "x86_64-unknown-linux-musl.tar.gz$"
+	install_zoxide
+	install_fzf
+	install_direnv
 }
 
 conf_setting() {
