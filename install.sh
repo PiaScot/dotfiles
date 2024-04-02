@@ -118,7 +118,8 @@ conf_setting() {
 }
 
 main() {
-	install_direnv
+	install_cmd
+	conf_setting
 }
 
 clean_tmp() {
