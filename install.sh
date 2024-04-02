@@ -14,7 +14,7 @@ check_install_command() {
 install_essential_command() {
 	sudo apt update
 	sudo apt upgrade
-	sudo apt-get install -y zsh build-essential procps curl file jq python3-venv pkg-config libssl-dev gh fd-find ripgrep
+	sudo apt-get install -y zsh build-essential procps curl file jq python3-venv pkg-config libssl-dev gh fd-find ripgrep golang
 }
 
 settings_wsl_conf() {
@@ -55,7 +55,7 @@ install_cmd_from_github() {
 			exit 1
 		fi
 
-		echo "$has_tar"
+		echo "$has_tar" | awk 'length($0) < prev_length || NR == 1 { shortest=$0; prev_length=length($0) } END { print shortest }'
 
 	}
 
@@ -63,26 +63,30 @@ install_cmd_from_github() {
 	local fname=$(basename "$cmd_url")
 	local dirname=$(echo "$fname" | sed 's/\.tar\.gz$//')
 	local cmd_name=$(echo "$fname" | sed 's/-.*//')
-	local untarred_files=$(wget "$cmd_url" -P "$HOME/tmp" && tar -xvf "$HOME/tmp/$fname")
 
-	if [ "$untarred_files" -gt 2 ]; then
-		# directory process
-		if [ -f "$HOME/tmp/$dirname/$cmd_name" ]; then
-			mkdir -p "$HOME/.local/bin/" && mv "$HOME/tmp/$dirname/$cmd_name" "$HOME/.local/bin"
-		fi
+	wget "$cmd_url" -P "$HOME/tmp" && tar -xf "$HOME/tmp/$fname" --directory="$HOME/tmp"
 
-		if [ -f "$HOME/tmp/$dirname/bin/$cmd_name" ]; then
-			mkdir -p "$HOME/.local/bin/" && mv "$HOME/tmp/$dirname/bin/$cmd_name" "$HOME/.local/bin"
-		fi
-
-	else
-		# file process
-		if [ -f "$HOME/tmp/$cmd_name" ]; then
-			mkdir -p "$HOME/.local/bin/" && mv "$HOME/tmp/$cmd_name" "$HOME/.local/bin"
-		fi
-
+	# directory pattern
+	if [ -f "$HOME/tmp/$dirname/$cmd_name" ]; then
+		mkdir -p "$HOME/.local/bin" && mv "$HOME/tmp/$dirname/$cmd_name" "$HOME/.local/bin"
 	fi
 
+	if [ -f "$HOME/tmp/$dirname/bin/$cmd_name" ]; then
+		mkdir -p "$HOME/.local/bin" && mv "$HOME/tmp/$dirname/bin/$cmd_name" "$HOME/.local/bin"
+	fi
+
+	# file pattern
+	if [ -f "$HOME/tmp/$cmd_name" ]; then
+		mkdir -p "$HOME/.local/bin/" && mv "$HOME/tmp/$cmd_name" "$HOME/.local/bin"
+	fi
+
+}
+
+# want string ex. https://go.dev/dl/go1.22.2.linux-amd64.tar.gz
+# so want to check latest version
+install_golang() {
+	latest_version=$(curl -sL https://godoc.org/golang.org/dl | grep -oP "go\d+\.\d+(\.\d+)?\s" | awk '{$1=$1};1' | sort -V | uniq | tail -n 1)
+	wget "https://go.dev/dl/${latest_version}.linux-amd64.tar.gz" -P "$HOME/tmp" && rm -rf /usr/local/go && tar -C /usr/local -xzf "$HOME/tmp/${latest_version}.linux-amd64.tar.gz"
 }
 
 install_zoxide() {
@@ -101,7 +105,8 @@ install_cmd() {
 	install_essential_command
 	install_cmd_from_github "https://github.com/eza-community/eza" "x86_64.*?-linux-gnu.tar.gz$"
 	install_cmd_from_github "https://github.com/rui314/mold" "x86_64-linux.tar.gz$"
-	install_cmd_from_github "https://github.com/mozilla/sccache", "x86_64-unknown-linux-musl.tar.gz$"
+	install_cmd_from_github "https://github.com/mozilla/sccache" "x86_64-unknown-linux-musl.tar.gz$"
+	install_golang
 	install_zoxide
 	install_fzf
 	install_direnv
@@ -113,8 +118,11 @@ conf_setting() {
 }
 
 main() {
-	conf_setting
-	install_cmd
+	install_direnv
+}
+
+clean_tmp() {
+	rm -rf "$HOME/tmp" && mkdir "$HOME/tmp"
 }
 
 main

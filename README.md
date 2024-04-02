@@ -21,6 +21,7 @@ sudo sh -c "echo nameserver 8.8.8.8 > /etc/resolv.conf"
 sudo apt update && sudo apt upgrade && sudo apt-get install -y zsh build-essential procps curl file git python3-venv pkg-config libssl-dev gh fd-find ripgrep zsh
 ```
 **Utility**
-- [Zimfw](https://github.com/zimfw/zimfw)
 - [zoxide](https://github.com/ajeetdsouza/zoxide)
 - [fzf](https://github.com/junegunn/fzf)
+- [rust](https://rustup.rs/)
+- [golang](https://go.dev/)
