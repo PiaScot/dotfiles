@@ -17,6 +17,8 @@ return {
 		local nls = require("null-ls")
 		local navic = require("nvim-navic")
 
+        require('lspconfig.ui.windows').default_options.border = 'single'
+
 		navic.setup({
 			lsp = {
 				auto_attach = true,
@@ -69,11 +71,13 @@ return {
 
 		mason.setup({
 			ui = {
+                border = "single",
 				icons = {
 					package_installed = "✓",
 					package_pending = "➜",
 					package_uninstalled = "✗",
 				},
+
 			},
 		})
 

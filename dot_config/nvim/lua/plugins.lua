@@ -11,15 +11,6 @@ return {
         end,
     },
     {
-        "folke/trouble.nvim",
-        dependencies = { "nvim-tree/nvim-web-devicons" },
-        opts = {
-            action_keys = {
-                switch_severity = {},
-            },
-        },
-    },
-    {
         "phaazon/hop.nvim",
         branch = "v2",
         config = function()

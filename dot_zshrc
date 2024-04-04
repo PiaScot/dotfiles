@@ -1,9 +1,13 @@
 
+bindkey -e
+
 PROMPT="%~ > "
 export HISTFILE=${HOME}/.zhistory
 export LESS='-g -i -M -R -S -w -X -z-4 -j5'
 export VISUAL='vi'
 
+# download from github,gitlab and so on..
+# installed by manually download and expand and move this path
 if [[ ! "$PATH" == *$HOME/.local/bin* ]]; then
   PATH="${PATH:+${PATH}:}$HOME/.local/bin"
 fi
@@ -12,9 +16,11 @@ if [[ ! "$PATH" == */usr/local/go/bin* ]]; then
   PATH="${PATH:+${PATH}:}/usr/local/go/bin"
 fi
 
-# if [[ ! "$PATH" == *$HOME/perl5/bin* ]]; then
-#   PATH="$HOME/perl5/bin${PATH:+:${PATH}}"
-# fi
+# I made usefull shell script
+if [[ ! "$PATH" == *$HOME/.local/dev/* ]]; then
+  PATH="${PATH:+${PATH}:}$HOME/.local/dev"
+fi
+
 
 autoload -Uz compinit && compinit
 
@@ -51,6 +57,9 @@ change_history_directory() {
   zle reset-prompt
 }
 
+zle -N change_history_directory
+bindkey '^f' change_history_directory
+
 init_go_project() {
     if [[ $# -ne 1 ]]; then
         echo "Specify name you wanna make go project"
@@ -63,9 +72,7 @@ init_go_project() {
     go mod init $name
 }
 
-zle -N change_history_directory
-bindkey '^f' change_history_directory
-bindkey -e
+
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

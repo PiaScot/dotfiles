@@ -25,7 +25,7 @@ return {
 			enable_auto = true,
 			mappings = {
 				is = {
-					["<TAB>"] = "expand_or_advance",
+					["<Enter>"] = "expand_or_advance",
 					["<S-TAB>"] = "previous",
 				},
 				nx = {
