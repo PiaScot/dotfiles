@@ -1,8 +1,16 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
 	event = "BufReadPre",
+	dependencies = {
+		"hiphish/rainbow-delimiters.nvim",
+		"JoosepAlviste/nvim-ts-context-commentstring",
+		"nvim-treesitter/nvim-treesitter-textobjects",
+		"RRethy/nvim-treesitter-textsubjects",
+		"mfussenegger/nvim-dap",
+		"theHamsta/nvim-dap-virtual-text",
+	},
 	config = function()
-		require("nvim-dap-virtual-text").setup()
+		require("nvim-dap-virtual-text").setup({})
 		require("nvim-treesitter.configs").setup({
 			ensure_installed = {
 				"tsx",
@@ -14,6 +22,8 @@ return {
 				"astro",
 				"svelte",
 				"go",
+				"c",
+				"rust",
 				"gitcommit",
 				"graphql",
 				"json",
@@ -100,14 +110,5 @@ return {
 				},
 			},
 		})
-
 	end,
-	dependencies = {
-		"hiphish/rainbow-delimiters.nvim",
-		"JoosepAlviste/nvim-ts-context-commentstring",
-		"nvim-treesitter/nvim-treesitter-textobjects",
-		"RRethy/nvim-treesitter-textsubjects",
-		"mfussenegger/nvim-dap",
-		"theHamsta/nvim-dap-virtual-text",
-	},
 }

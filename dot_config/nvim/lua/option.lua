@@ -3,32 +3,32 @@ vim.g.do_filetype_lua = 1
 vim.g.python3_host_prog = "/usr/bin/python3"
 
 local disabled_build_ins = {
-    "netrw",
-    "netrwPlugin",
-    "netrwSettings",
-    "netrwFileHandlers",
-    "gzip",
-    "zip",
-    "zipPlugin",
-    "tar",
-    "tarPlugin",
-    "tohtml",
-    "tutor",
-    "getscript",
-    "getscriptPlugin",
-    "vimball",
-    "vimballPlugin",
-    "2html_plugin",
-    "man",
-    "logipat",
-    "rrhelper",
-    "spellfile_plugin",
-    "matchit",
-    "matchparen",
+	"netrw",
+	"netrwPlugin",
+	"netrwSettings",
+	"netrwFileHandlers",
+	"gzip",
+	"zip",
+	"zipPlugin",
+	"tar",
+	"tarPlugin",
+	"tohtml",
+	"tutor",
+	"getscript",
+	"getscriptPlugin",
+	"vimball",
+	"vimballPlugin",
+	"2html_plugin",
+	"man",
+	"logipat",
+	"rrhelper",
+	"spellfile_plugin",
+	"matchit",
+	"matchparen",
 }
 
 for _, plugin in pairs(disabled_build_ins) do
-    vim.g["loaded_" .. plugin] = 1
+	vim.g["loaded_" .. plugin] = 1
 end
 
 vim.opt.number = true
@@ -90,60 +90,60 @@ vim.opt.list = false
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 if vim.fn.has("wsl") then
-    vim.g.clipboard = {
-        name = "wsl_clipboard",
-        copy = {
-            ["+"] = "/mnt/c/Tools/win32yank.exe -i",
-            ["*"] = "/mnt/c/Tools/win32yank.exe -i",
-        },
-        paste = {
-            ["+"] = "/mnt/c/Tools/win32yank.exe -o",
-            ["*"] = "/mnt/c/Tools/win32yank.exe -o",
-        },
-        cache_enabled = 0,
-    }
--- else 
-    vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
+	vim.g.clipboard = {
+		name = "wsl_clipboard",
+		copy = {
+			["+"] = "/mnt/c/Tools/win32yank.exe -i",
+			["*"] = "/mnt/c/Tools/win32yank.exe -i",
+		},
+		paste = {
+			["+"] = "/mnt/c/Tools/win32yank.exe -o",
+			["*"] = "/mnt/c/Tools/win32yank.exe -o",
+		},
+		cache_enabled = 0,
+	}
+	-- else
+	vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
 end
-
 
 local autocmd = vim.api.nvim_create_autocmd
 
 -- not continue comment line
 autocmd("BufEnter", {
-    pattern = "*",
-    command = "set fo-=c fo-=r fo-=o",
+	pattern = "*",
+	command = "set fo-=c fo-=r fo-=o",
 })
 
 -- can close q key with under filetype
 autocmd("Filetype", {
-    pattern = {
-        "help",
-        "man",
-        "notify",
-        "lspinfo",
-        "startuptime",
-    },
-    callback = function(event)
-        vim.bo[event.buf].buflisted = false
-        vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
-    end,
+	pattern = {
+		"help",
+		"man",
+		"notify",
+		"lspinfo",
+		"startuptime",
+		"TelescopePrompt",
+	},
+	callback = function(event)
+		vim.bo[event.buf].buflisted = false
+		vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+	end,
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
-    callback = function()
-        vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
-    end,
+	callback = function()
+		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
+	end,
 })
 
 vim.api.nvim_create_autocmd(
-{ "BufRead", "BufNewFile" },
-{ pattern = "*/node_modules/*", command = "lua vim.diagnostic.disable(0)" }
+	{ "BufRead", "BufNewFile" },
+	{ pattern = "*/node_modules/*", command = "lua vim.diagnostic.disable(0)" }
 )
 
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-    pattern = { "*.md", "*.tex" },
-    command = "setlocal spell",
+	pattern = { "*.md", "*.tex" },
+	command = "setlocal spell",
 })
 
 -- disable neovim background color

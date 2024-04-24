@@ -5,7 +5,8 @@ return {
 		"folke/neodev.nvim",
 		"williamboman/mason.nvim",
 		"jay-babu/mason-nvim-dap.nvim",
-		"jose-elias-alvarez/null-ls.nvim",
+		"jay-babu/mason-null-ls.nvim",
+		"nvimtools/none-ls.nvim",
 		"williamboman/mason-lspconfig.nvim",
 		"SmiteshP/nvim-navic",
 	},
@@ -17,7 +18,12 @@ return {
 		local nls = require("null-ls")
 		local navic = require("nvim-navic")
 
-        require('lspconfig.ui.windows').default_options.border = 'single'
+		require("lspconfig.ui.windows").default_options.border = "single"
+		require("mason-null-ls").setup({
+			ensure_installed = { "stylua", "gofmt", "gofumpt", "goimports", "clang_format", "shfmt", "yapf" },
+			-- ensure_installed = nil,
+			automatic_installation = true,
+		})
 
 		navic.setup({
 			lsp = {
@@ -33,6 +39,19 @@ return {
 		require("neodev").setup({
 			-- library = { plugins = { "nvim-dap-ui" }, types = true },
 		})
+
+		local sign = function(opts)
+			vim.fn.sign_define(opts.name, {
+				texthl = opts.name,
+				text = opts.text,
+				numhl = "",
+			})
+		end
+
+		sign({ name = "DiagnosticSignError", text = " ✘" })
+		sign({ name = "DiagnosticSignWarn", text = " " })
+		sign({ name = "DiagnosticSignHint", text = " " })
+		sign({ name = "DiagnosticSignInfo", text = " " })
 
 		local capabilities
 		do
@@ -71,26 +90,22 @@ return {
 
 		mason.setup({
 			ui = {
-                border = "single",
+				border = "single",
 				icons = {
 					package_installed = "✓",
 					package_pending = "➜",
 					package_uninstalled = "✗",
 				},
-
 			},
 		})
 
 		require("mason-lspconfig").setup({
 			ensure_installed = {
-			--	"gopls",
-				-- "gofumpt",
-				-- "golangci_lint",
-				-- "stylua",
-			--	"rust_analyzer",
-			--	"pyright",
-			--	"jsonls",
-			--	"clangd",
+				"gopls",
+				"rust_analyzer",
+				"lua_ls",
+				-- "ruff_lsp",
+				"clangd",
 			},
 			automatic_installation = true,
 		})
@@ -200,21 +215,29 @@ return {
 					},
 				})
 			end,
-			-- ["pyright"] = function()
-			-- 	lspconfig.pyright.setup({
-			-- 		settings = {
-			-- 			python = {
-			-- 				venvPath = ".",
-			-- 				pythonPath = "./venv/bin/python",
-			-- 				analysis = {
-			-- 					extraPaths = { "." },
-			-- 					autoSearchPaths = true,
-			-- 					useLibraryCodeForTypes = true,
-			-- 				},
-			-- 			},
-			-- 		},
-			-- 	})
+			-- ["ruff_lsp"] = function()
+			--     lspconfig.ruff_lsp.setup({
+			--         init_options = {
+			--             settings = {
+			--                 args = {},
+			--             },
+			--         },
+			--     })
 			-- end,
+			["pyright"] = function()
+				lspconfig.pyright.setup({
+					settings = {
+						python = {
+							pythonPath = "./venv/bin/python",
+							analysis = {
+								autoSearchPaths = true,
+								diagnosticsMode = "openFilesOnly",
+								useLibraryCodeForTypes = true,
+							},
+						},
+					},
+				})
+			end,
 			-- ["perlpls"] = function()
 			-- 	lspconfig.perlpls.setup({
 			-- 		settings = {
@@ -262,17 +285,6 @@ return {
 			-- end,
 		})
 
-		-- require("lspconfig").millet.setup({})
-		-- lspconfig.perlpls.setup({
-		-- 	settings = {
-		-- 		perl = {
-		-- 			perlcritic = { enable = false },
-		-- 			syntax = { enabled = true },
-		-- 		},
-		-- 	},
-		-- 	single_file_support = true,
-		-- })
-
 		vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
 			border = "rounded",
 		})
@@ -297,57 +309,35 @@ return {
 				end
 			end,
 			sources = {
+				-- nls.builtins.diagnostics.ruff.with({
+				-- 	method = nls.methods.DIAGNOSTICS_ON_SAVE,
+				-- }),
+
+				-- nls.builtins.diagnostics.shellcheck,
+				nls.builtins.diagnostics.golangci_lint,
+
 				nls.builtins.formatting.yapf.with({
 					extra_args = { "--config", "~/.config/yapf/style" },
 				}),
-				nls.builtins.diagnostics.ruff.with({
-					method = nls.methods.DIAGNOSTICS_ON_SAVE,
-				}),
-				-- to sort imports alphabetically and automatically separate them into sections and by type.
-				nls.builtins.formatting.isort,
-				-- if the project is using eslint_d, use that instead instead of ~/.config/.eslintrc.js
-				-- open the file, and find .eslintrc.js file, not found, the searcher will be go upper directory
-				-- until to find package.json that is project root directory
-				-- nls.builtins.diagnostics.eslint,
-				-- nls.builtins.diagnostics.eslint_d,
-				-- nls.builtins.formatting.prettier,
 
-				nls.builtins.diagnostics.shellcheck,
+				-- to sort imports alphabetically and automatically separate them into sections and by type.
+				-- nls.builtins.formatting.isort,
 				nls.builtins.formatting.shfmt,
-				-- nls.builtins.formatting.clang_format,
-				nls.builtins.formatting.clang_format.with({
-					extra_args = { '--style=file:"/home/plum/.clang-format' },
-				}),
+				nls.builtins.formatting.clang_format,
 				-- nls.builtins.code_actions.gitsigns,
 				-- nls.builtins.formatting.gofmt,
-
-				nls.builtins.diagnostics.golangci_lint,
 				nls.builtins.formatting.gofumpt,
 				nls.builtins.formatting.goimports,
 
 				-- nls.builtins.formatting.golines,
-				-- nls.builtins.formatting.stylua,
-				nls.builtins.formatting.rustfmt,
+				nls.builtins.formatting.stylua,
 			},
 		})
-
-		local sign = function(opts)
-			vim.fn.sign_define(opts.name, {
-				texthl = opts.name,
-				text = opts.text,
-				numhl = "",
-			})
-		end
 
 		-- sign({ name = "DiagnosticSignError", text = "✘ " })
 		-- sign({ name = "DiagnosticSignWarn", text = "▲ " })
 		-- sign({ name = "DiagnosticSignHint", text = "⚑ " })
 		-- sign({ name = "DiagnosticSignInfo", text = " " })
-
-		sign({ name = "DiagnosticSignError", text = "✘ " })
-		sign({ name = "DiagnosticSignWarn", text = " " })
-		sign({ name = "DiagnosticSignHint", text = " " })
-		sign({ name = "DiagnosticSignInfo", text = " " })
 
 		-- signs = {
 		--   -- icons / text used for a diagnostic

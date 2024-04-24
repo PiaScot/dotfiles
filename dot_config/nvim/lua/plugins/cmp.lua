@@ -10,16 +10,25 @@ return {
 		"dcampos/nvim-snippy",
 		"dcampos/cmp-snippy",
 		"honza/vim-snippets",
+		"nvim-treesitter/nvim-treesitter",
 	},
 	config = function()
+		local cmp = require("cmp")
+		local snippy = require("snippy")
+		local lspkind = require("lspkind")
+		local ts_utils = require("nvim-treesitter.ts_utils")
+
+		local ts_node_func_parens_disabled = {
+			-- ecma
+			named_imports = true,
+			-- rust
+			use_declaration = true,
+		}
+
 		local has_words_before = function()
 			local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 			return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 		end
-
-		local cmp = require("cmp")
-		local snippy = require("snippy")
-		local lspkind = require("lspkind")
 
 		snippy.setup({
 			enable_auto = true,
@@ -111,7 +120,5 @@ return {
 				{ name = "buffer" },
 			},
 		})
-		-- local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-		-- cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 	end,
 }
