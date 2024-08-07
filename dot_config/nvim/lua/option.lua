@@ -1,6 +1,6 @@
 vim.g.do_filetype_lua = 1
 
-vim.g.python3_host_prog = "/usr/bin/python3"
+vim.g.python3_host_prog = "/home/plum/.rye/shims/python"
 
 local disabled_build_ins = {
 	"netrw",
@@ -31,8 +31,8 @@ for _, plugin in pairs(disabled_build_ins) do
 	vim.g["loaded_" .. plugin] = 1
 end
 
-vim.opt.number = true
--- vim.opt.relativenumber = true
+-- vim.opt.number = true
+vim.opt.relativenumber = true
 
 -- not distinguish search command(/) big character or small character
 vim.opt.ignorecase = true
@@ -74,7 +74,7 @@ vim.opt.shiftround = true
 vim.opt.pumheight = 10
 
 -- Enables pseudo-transparency for the |popup-menu|. (default 0)
-vim.opt.pumblend = 10
+vim.opt.pumblend = 15
 
 -- use 24-bit color in nvim
 -- to be transparency background is :hi Normal guibg=NONE
@@ -121,6 +121,7 @@ autocmd("Filetype", {
 		"man",
 		"notify",
 		"lspinfo",
+		"null-ls-info",
 		"startuptime",
 		"TelescopePrompt",
 	},

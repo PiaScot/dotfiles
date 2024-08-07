@@ -5,25 +5,19 @@ return {
 		"hrsh7th/cmp-buffer",
 		"hrsh7th/cmp-cmdline",
 		"hrsh7th/cmp-nvim-lsp",
+
 		"onsails/lspkind.nvim",
 		"hrsh7th/cmp-nvim-lsp-signature-help",
+
 		"dcampos/nvim-snippy",
 		"dcampos/cmp-snippy",
+
 		"honza/vim-snippets",
-		"nvim-treesitter/nvim-treesitter",
 	},
 	config = function()
 		local cmp = require("cmp")
 		local snippy = require("snippy")
 		local lspkind = require("lspkind")
-		local ts_utils = require("nvim-treesitter.ts_utils")
-
-		local ts_node_func_parens_disabled = {
-			-- ecma
-			named_imports = true,
-			-- rust
-			use_declaration = true,
-		}
 
 		local has_words_before = function()
 			local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -49,10 +43,10 @@ return {
 					require("snippy").expand_snippet(args.body)
 				end,
 			},
-			-- window = {
-			-- 	-- completion = cmp.config.window.bordered(),
-			-- 	-- documentation = cmp.config.window.bordered(),
-			-- },
+			window = {
+				completion = cmp.config.window.bordered(),
+				documentation = cmp.config.window.bordered(),
+			},
 			mapping = cmp.mapping.preset.insert({
 				["<C-n>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then

@@ -118,7 +118,7 @@ conf_setting() {
 }
 
 main() {
-	install_cmd
+	install_essential_command
 	conf_setting
 }
 
