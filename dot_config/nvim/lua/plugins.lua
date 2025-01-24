@@ -2,11 +2,15 @@ return {
     {
         "rebelot/kanagawa.nvim",
     },
+    -- {
+    --     "nvim-tree/nvim-web-devicons",
+    --     config = function()
+    --         require("nvim-web-devicons").setup({ default = true })
+    --     end,
+    -- },
     {
-        "nvim-tree/nvim-web-devicons",
-        config = function()
-            require("nvim-web-devicons").setup({ default = true })
-        end,
+        "echasnovski/mini.icons",
+        version = false,
     },
     {
         "EdenEast/nightfox.nvim",
@@ -33,15 +37,6 @@ return {
             keymap("", "f", "<cmd>HopChar1<CR>", {})
         end,
     },
-    -- {
-    -- 	"windwp/nvim-autopairs",
-    -- 	config = function()
-    -- 		require("nvim-autopairs").setup({
-    -- 			disable_filetype = { "TelescopePrompt" },
-    -- 		})
-    -- 	end,
-    -- },
-
     {
         "nvim-telescope/telescope.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
@@ -85,22 +80,19 @@ return {
             "nvim-lua/plenary.nvim",
         },
     },
-
     {
-        {
-            "akinsho/toggleterm.nvim",
-            version = "*",
-            -- opts = {
-            --      direction = "float",
-            -- },
-            config = function()
-                require("toggleterm").setup({
-                    direction = "float",
-                })
+        "akinsho/toggleterm.nvim",
+        version = "*",
+        -- opts = {
+        --      direction = "float",
+        -- },
+        config = function()
+            require("toggleterm").setup({
+                direction = "float",
+            })
 
-                vim.api.nvim_set_keymap("n", "<leader>t", ":ToggleTerm<CR>", { noremap = true, silent = true })
-            end,
-        },
+            vim.api.nvim_set_keymap("n", "<leader>t", ":ToggleTerm<CR>", { noremap = true, silent = true })
+        end,
     },
     {
         "simrat39/symbols-outline.nvim",
@@ -112,11 +104,6 @@ return {
     {
         "stevearc/dressing.nvim",
         opts = {},
-    },
-    {
-        "ellisonleao/glow.nvim",
-        config = true,
-        cmd = "Glow",
     },
     {
         "numToStr/Comment.nvim",
@@ -142,11 +129,6 @@ return {
         end,
     },
     {
-        "ellisonleao/glow.nvim",
-        config = true,
-        cmd = "Glow",
-    },
-    {
         "windwp/nvim-autopairs",
         event = "InsertEnter",
         config = true,
@@ -164,6 +146,15 @@ return {
             require("dapui").setup()
             require("nvim-dap-virtual-text").setup({})
         end,
+    },
+    {
+        "OXY2DEV/markview.nvim",
+        lazy = false, -- Recommended
+        -- ft = "markdown" -- If you decide to lazy-load anyway
+
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+        },
     },
     {
         "vhyrro/luarocks.nvim",

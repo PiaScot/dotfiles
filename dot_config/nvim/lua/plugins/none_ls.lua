@@ -9,6 +9,8 @@ return {
         local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
         nls.setup({
             on_attach = function(client, bufnr)
+                client.server_capabilities.document_formatting = false
+                client.server_capabilities.document_range_formatting = false
                 -- client.offset_encodings = "utf-32"
                 -- client.offset_encoding = "utf-8"
                 if client.supports_method("textDocument/formatting") then
@@ -24,10 +26,7 @@ return {
                 end
             end,
             sources = {
-                -- nls.builtins.diagnostics.ruff.with({
-                -- 	method = nls.methods.DIAGNOSTICS_ON_SAVE,
-                -- }),
-
+                -- nls.builtins.diagnostics.ruff,
                 -- nls.builtins.diagnostics.shellcheck,
                 nls.builtins.diagnostics.golangci_lint,
 
@@ -35,9 +34,11 @@ return {
                 nls.builtins.formatting.shfmt,
                 nls.builtins.formatting.clang_format,
                 -- nls.builtins.code_actions.gitsigns,
-                -- nls.builtins.formatting.gofmt,
+                nls.builtins.formatting.gofmt,
                 nls.builtins.formatting.gofumpt,
                 nls.builtins.formatting.goimports,
+
+                -- nls.builtins.formatting.ruff,
 
                 -- nls.builtins.formatting.golines,
                 nls.builtins.formatting.stylua,

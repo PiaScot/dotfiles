@@ -36,7 +36,7 @@ return {
             automatic_installation = true,
         })
         require("mason-null-ls").setup({
-            ensure_installed = { "stylua", "gofmt", "gofumpt", "goimports", "clang_format", "shfmt" },
+            ensure_installed = { "stylua", "gofmt", "gofumpt", "goimports", "shfmt" },
             automatic_installation = true,
         })
 
@@ -83,7 +83,7 @@ return {
             underline = false,
             update_in_insert = false,
             severity_sort = false,
-            float = { border = "rounded" },
+            -- float = { border = "single" },
         })
         -- vim.diagnostic.config = nil
 
@@ -106,7 +106,7 @@ return {
         })
 
         vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-            border = "rounded",
+            border = "single",
         })
 
         local sign = function(opts)
@@ -206,15 +206,15 @@ return {
                     settings = settings,
                 })
             end,
-            -- ["ruff_lsp"] = function()
-            --     lspconfig.ruff_lsp.setup({
-            --         init_options = {
-            --             settings = {
-            --                 args = {},
-            --             },
-            --         },
-            --     })
-            -- end,
+            ["ruff_lsp"] = function()
+                lspconfig.ruff_lsp.setup({
+                    init_options = {
+                        settings = {
+                            args = {},
+                        },
+                    },
+                })
+            end,
             ["pyright"] = function()
                 lspconfig.pyright.setup({
                     settings = {
@@ -228,6 +228,11 @@ return {
                     },
                 })
             end,
+            -- ["clangd"] = function()
+            --     lspconfig.clangd.setup({
+            --         offsetEncoding = "utf-8",
+            --     })
+            -- end,
             -- ["perlpls"] = function()
             -- 	lspconfig.perlpls.setup({
             -- 		settings = {

@@ -25,18 +25,23 @@ map("t", "JJ", "<C-\\><C-n>", silent)
 map("n", "<C-p>", "<Cmd>BufferPrevious<CR>", silent)
 map("n", "<C-n>", "<Cmd>BufferNext<CR>", silent)
 -- Goto buffer in position...
-map("n", "<C-1>", "<Cmd>BufferGoto 1<CR>", silent)
-map("n", "<C-2>", "<Cmd>BufferGoto 2<CR>", silent)
-map("n", "<C-3>", "<Cmd>BufferGoto 3<CR>", silent)
-map("n", "<C-4>", "<Cmd>BufferGoto 4<CR>", silent)
-map("n", "<C-5>", "<Cmd>BufferGoto 5<CR>", silent)
-map("n", "<C-6>", "<Cmd>BufferGoto 6<CR>", silent)
-map("n", "<C-7>", "<Cmd>BufferGoto 7<CR>", silent)
-map("n", "<C-8>", "<Cmd>BufferGoto 8<CR>", silent)
-map("n", "<C-9>", "<Cmd>BufferGoto 9<CR>", silent)
-map("n", "<C-0>", "<Cmd>BufferLast<CR>", silent)
+map("n", "<A-1>", "<Cmd>BufferGoto 1<CR>", silent)
+map("n", "<A-2>", "<Cmd>BufferGoto 2<CR>", silent)
+map("n", "<A-3>", "<Cmd>BufferGoto 3<CR>", silent)
+map("n", "<A-4>", "<Cmd>BufferGoto 4<CR>", silent)
+map("n", "<A-5>", "<Cmd>BufferGoto 5<CR>", silent)
+map("n", "<A-6>", "<Cmd>BufferGoto 6<CR>", silent)
+map("n", "<A-7>", "<Cmd>BufferGoto 7<CR>", silent)
+map("n", "<A-8>", "<Cmd>BufferGoto 8<CR>", silent)
+map("n", "<A-9>", "<Cmd>BufferGoto 9<CR>", silent)
+map("n", "<A-0>", "<Cmd>BufferLast<CR>", silent)
+map("n", "<leader>bb", "<Cmd>BufferClose<CR>", silent)
+map("n", "<leader>bv", "<Cmd>BufferClose<CR>", silent)
+
 -- Excludes buffers from the tabline
 map("n", "<C-q>", "<Cmd>BufferClose<CR>", silent)
 map("n", "<A-q>", "<Cmd>BufferCloseAllButVisible<CR>", silent)
 -- require pandoc format table in .md file
 map("v", "\\e", "!pandoc -t markdown-simple_tables<CR>", silent)
+
+-- manage buffer delete

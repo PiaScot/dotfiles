@@ -2,6 +2,7 @@ return {
 	"folke/tokyonight.nvim",
 	config = function()
 		require("tokyonight").setup({
+			-- plugins = { markdown = true },
 			-- your configuration comes here
 			-- or leave it empty to use the default settings
 			-- style = "moon", -- The theme comes in three styles, `storm`, `moon`, a darker variant `night` and `day`
