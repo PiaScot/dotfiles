@@ -18,8 +18,6 @@ if [[ ! "$PATH" == *\/usr/local/go/bin* ]]; then
   PATH="${PATH:+${PATH}:}/usr/local/go/bin"
 fi
 
-# download from github,gitlab and so on..
-# installed by manually download and expand and move this path
 if [[ ! "$PATH" == *$HOME/.local/bin* ]]; then
   PATH="${PATH:+${PATH}:}$HOME/.local/bin"
 fi
@@ -46,14 +44,13 @@ alias ctp='cargo test -- --nocapture'
 alias gor='go run ./main.go'
 alias gmd='go mod tidy'
 alias gopro='init_go_project'
-# use nvim-nightly
+alias v='nvim'
+alias mr='make run'
+alias mb='make debug'
 
 eval "$(zoxide init zsh)"
-eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
-# eval "$(dircolors -b ~/.dircolors)"
 eval "$(gh completion -s zsh)"
-
 
 change_history_directory() {
   __zoxide_zi
