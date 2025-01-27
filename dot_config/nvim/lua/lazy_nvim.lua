@@ -10,11 +10,6 @@ if not vim.loop.fs_stat(lazypath) then
         lazypath,
     })
 end
-
-if vim.g.neovide then
-    vim.o.guifont = "IosevkaTermSlab Nerd Font Mono:h11"
-end
-
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({

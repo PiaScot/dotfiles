@@ -4,9 +4,6 @@ local map = vim.api.nvim_set_keymap
 map("n", ";", ":", { noremap = true })
 map("n", ":", ";", { noremap = true })
 
--- map("n", "<C-p>", ":bprev<CR>", silent)
--- map("n", "<C-n>", ":bnext<CR>", silent)
-
 map("n", "ss", "<C-w>s", silent)
 map("n", "sv", "<C-w>v", silent)
 map("n", "sh", "<C-w>h", silent)
@@ -43,5 +40,3 @@ map("n", "<C-q>", "<Cmd>BufferClose<CR>", silent)
 map("n", "<A-q>", "<Cmd>BufferCloseAllButVisible<CR>", silent)
 -- require pandoc format table in .md file
 map("v", "\\e", "!pandoc -t markdown-simple_tables<CR>", silent)
-
--- manage buffer delete

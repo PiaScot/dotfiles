@@ -1,11 +1,12 @@
 vim.g.do_filetype_lua = 1
 
+vim.g.python3_host_prog = "/usr/bin/python3"
 vim.opt.number = true
 -- vim.opt.relativenumber = true
 -- not distinguish search command(/) big character or small character
 vim.opt.ignorecase = true
 -- global statusline
-vim.opt.laststatus = 3
+vim.opt.laststatus = 1
 -- wrap 80 width line
 vim.opt.textwidth = 80
 -- always focus cursor on middle center
@@ -44,24 +45,24 @@ vim.opt.completeopt = { "menu", "menuone", "noselect" }
 -- don't syntax highlight lone line file
 vim.o.synmaxcol = 1000
 
--- if vim.fn.has("wsl") then
---     vim.g.clipboard = {
---         name = "wsl_clipboard",
---         copy = {
---             ["+"] = "/mnt/c/Tools/win32yank.exe -i",
---             ["*"] = "/mnt/c/Tools/win32yank.exe -i",
---         },
---         paste = {
---             ["+"] = "/mnt/c/Tools/win32yank.exe -o",
---             ["*"] = "/mnt/c/Tools/win32yank.exe -o",
---         },
---         cache_enabled = 0,
---     }
---     -- else
---     vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
--- end
+if vim.fn.has("wsl") then
+    vim.g.clipboard = {
+        name = "wsl_clipboard",
+        copy = {
+            ["+"] = "/mnt/c/Tools/win32yank.exe -i",
+            ["*"] = "/mnt/c/Tools/win32yank.exe -i",
+        },
+        paste = {
+            ["+"] = "/mnt/c/Tools/win32yank.exe -o",
+            ["*"] = "/mnt/c/Tools/win32yank.exe -o",
+        },
+        cache_enabled = 0,
+    }
+else
+    vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
+end
 
-vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
+-- vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
 
 local autocmd = vim.api.nvim_create_autocmd
 

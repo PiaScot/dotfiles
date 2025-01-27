@@ -173,11 +173,21 @@ return {
                 end
                 return msg
             end,
-            icon = " LSP:",
+            icon = "  LSP:",
             color = { fg = "#ffffff", gui = "bold" },
         })
 
         -- Add components to right sections
+        ins_right({
+            function()
+                local icon = "🕒"
+                local time = os.date("%H:%M")
+                return icon .. " " .. time
+            end,
+            color = { fg = colors.cyan, gui = "bold" },
+            padding = { left = 1, right = 1 },
+        })
+
         ins_right({
             "o:encoding", -- option component same as &encoding in viml
             fmt = string.upper, -- I'm not sure why it's upper case either ;)

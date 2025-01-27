@@ -7,6 +7,8 @@ return {
         "jay-babu/mason-null-ls.nvim",
         "folke/neodev.nvim",
         "williamboman/mason-lspconfig.nvim",
+        "stevearc/dressing.nvim",
+        "nvimdev/lspsaga.nvim",
     },
     config = function()
         local lspconfig = require("lspconfig")
@@ -15,6 +17,15 @@ return {
 
         require("lspconfig.ui.windows").default_options.border = "single"
         require("neodev").setup({})
+        require("dressing").setup({})
+        require("lspsaga").setup({
+            ui = {
+                lightbulb = {
+                    enable = false,
+                },
+            },
+        })
+
         require("mason").setup({
             ui = {
                 border = "single",
@@ -28,15 +39,21 @@ return {
         require("mason-lspconfig").setup({
             ensure_installed = {
                 "pyright",
+                "lua_ls",
                 "gopls",
                 "rust_analyzer",
-                "lua_ls",
                 "clangd",
             },
             automatic_installation = true,
         })
         require("mason-null-ls").setup({
-            ensure_installed = { "stylua", "gofmt", "gofumpt", "goimports", "shfmt" },
+            ensure_installed = {
+                "stylua",
+                "shfmt",
+                "gofmt",
+                "gofumpt",
+                "goimports",
+            },
             automatic_installation = true,
         })
 
@@ -95,13 +112,12 @@ return {
                     vim.keymap.set(mode, lhs, rhs, opts)
                 end
 
-                bufmap("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>")
-                bufmap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>")
-                bufmap("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>")
-                bufmap("n", "gy", "<cmd>lua vim.lsp.buf.references()<cr>")
+                bufmap("n", "K", "<cmd>Lspsaga hover_doc<cr>")
+                bufmap("n", "gd", "<cmd>Lspsaga peek_definition<cr>")
+                bufmap("n", "gy", "<cmd>Lspsaga finder<cr>")
                 bufmap("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>")
-                bufmap("n", "<C-k>", "<cmd>lua vim.diagnostic.goto_prev()<cr>")
-                bufmap("n", "<C-j>", "<cmd>lua vim.diagnostic.goto_next()<cr>")
+                bufmap("n", "<C-k>", "<cmd>Lspsaga diagnostic_jump_prev<cr>")
+                bufmap("n", "<C-j>", "<cmd>Lspsaga diagnostic_jump_next<cr>")
             end,
         })
 
@@ -189,45 +205,45 @@ return {
             -- ["millet_ls"] = function()
             -- 	lspconfig.millet.setup({})
             -- end,
-            ["gopls"] = function()
-                local gopath = os.getenv("GOPATH")
-                local settings = {
-                    deepCompletion = true,
-                    fuzzyMatching = true,
-                    completeUnimported = true,
-                    usePlaceholders = true,
-                }
+            -- ["gopls"] = function()
+            --     local gopath = os.getenv("GOPATH")
+            --     local settings = {
+            --         deepCompletion = true,
+            --         fuzzyMatching = true,
+            --         completeUnimported = true,
+            --         usePlaceholders = true,
+            --     }
 
-                if gopath then
-                    settings.directoryFilters = { "+" .. gopath .. "/pkg/mod/golang.org/x" }
-                end
+            --     if gopath then
+            --         settings.directoryFilters = { "+" .. gopath .. "/pkg/mod/golang.org/x" }
+            --     end
 
-                lspconfig.gopls.setup({
-                    settings = settings,
-                })
-            end,
-            ["ruff_lsp"] = function()
-                lspconfig.ruff_lsp.setup({
-                    init_options = {
-                        settings = {
-                            args = {},
-                        },
-                    },
-                })
-            end,
-            ["pyright"] = function()
-                lspconfig.pyright.setup({
-                    settings = {
-                        python = {
-                            analysis = {
-                                autoSearchPaths = true,
-                                diagnosticsMode = "openFilesOnly",
-                                useLibraryCodeForTypes = true,
-                            },
-                        },
-                    },
-                })
-            end,
+            --     lspconfig.gopls.setup({
+            --         settings = settings,
+            --     })
+            -- end,
+            -- ["ruff_lsp"] = function()
+            --     lspconfig.ruff_lsp.setup({
+            --         init_options = {
+            --             settings = {
+            --                 args = {},
+            --             },
+            --         },
+            --     })
+            -- end,
+            -- ["pyright"] = function()
+            --     lspconfig.pyright.setup({
+            --         settings = {
+            --             python = {
+            --                 analysis = {
+            --                     autoSearchPaths = true,
+            --                     diagnosticsMode = "openFilesOnly",
+            --                     useLibraryCodeForTypes = true,
+            --                 },
+            --             },
+            --         },
+            --     })
+            -- end,
             -- ["clangd"] = function()
             --     lspconfig.clangd.setup({
             --         offsetEncoding = "utf-8",

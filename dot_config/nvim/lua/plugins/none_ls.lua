@@ -28,15 +28,15 @@ return {
             sources = {
                 -- nls.builtins.diagnostics.ruff,
                 -- nls.builtins.diagnostics.shellcheck,
-                nls.builtins.diagnostics.golangci_lint,
+                -- nls.builtins.diagnostics.golangci_lint,
 
                 -- nls.builtins.formatting.isort,
                 nls.builtins.formatting.shfmt,
-                nls.builtins.formatting.clang_format,
+                -- nls.builtins.formatting.clang_format,
                 -- nls.builtins.code_actions.gitsigns,
-                nls.builtins.formatting.gofmt,
-                nls.builtins.formatting.gofumpt,
-                nls.builtins.formatting.goimports,
+                -- nls.builtins.formatting.gofmt,
+                -- nls.builtins.formatting.gofumpt,
+                -- nls.builtins.formatting.goimports,
 
                 -- nls.builtins.formatting.ruff,
 

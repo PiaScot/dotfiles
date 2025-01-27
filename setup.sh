@@ -36,7 +36,7 @@ is_wsl() {
 	uname -r | grep -iq "wsl"
 }
 
-essential_commands=(curl wget chattr chsh tar sudo)
+essential_commands=(zip unzip curl gzip wget chattr chsh tar sudo)
 check_essential_commands() {
 	local missing_count=0
 	for cmd in "${essential_commands[@]}"; do
