@@ -45,6 +45,8 @@ vim.opt.completeopt = { "menu", "menuone", "noselect" }
 -- don't syntax highlight lone line file
 vim.o.synmaxcol = 1000
 
+vim.o.clipboard = "unnamedplus"
+
 if vim.fn.has("wsl") then
     vim.g.clipboard = {
         name = "wsl_clipboard",
@@ -58,11 +60,7 @@ if vim.fn.has("wsl") then
         },
         cache_enabled = 0,
     }
-else
-    vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
 end
-
--- vim.o.clipboard = vim.o.clipboard .. "unnamedplus"
 
 local autocmd = vim.api.nvim_create_autocmd
 

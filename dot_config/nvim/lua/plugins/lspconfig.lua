@@ -19,10 +19,12 @@ return {
         require("neodev").setup({})
         require("dressing").setup({})
         require("lspsaga").setup({
-            ui = {
-                lightbulb = {
-                    enable = false,
-                },
+            ui = {},
+            lightbulb = {
+                enable = false,
+            },
+            outline = {
+                win_width = 50,
             },
         })
 
@@ -113,9 +115,12 @@ return {
                 end
 
                 bufmap("n", "K", "<cmd>Lspsaga hover_doc<cr>")
-                bufmap("n", "gd", "<cmd>Lspsaga peek_definition<cr>")
+                bufmap("n", "gd", "<cmd>Lspsaga goto_definition<cr>")
                 bufmap("n", "gy", "<cmd>Lspsaga finder<cr>")
-                bufmap("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>")
+                bufmap("n", "gr", "<cmd>Lspsaga rename<cr>")
+                bufmap("n", "\\t", "<cmd>Lspsaga term_toggle<cr>")
+                bufmap("n", "\\o", "<cmd>Lspsaga outline<cr>")
+
                 bufmap("n", "<C-k>", "<cmd>Lspsaga diagnostic_jump_prev<cr>")
                 bufmap("n", "<C-j>", "<cmd>Lspsaga diagnostic_jump_next<cr>")
             end,

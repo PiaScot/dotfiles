@@ -67,10 +67,7 @@ install_pkg() {
 		ubuntu | debian)
 			apt_install_packages
 			;;
-		almalinux | rocky | centos | rhel)
-			echo "dnf"
-			;;
-		fedora)
+		almalinux | rocky | centos | rhel | fedora)
 			echo "dnf"
 			;;
 		opensuse | suse)
@@ -123,6 +120,18 @@ install_dotfiles() {
 	mv -R ./dot_cargo ~/.cargo
 }
 
+modify_python3_path_in_nvim_option() {
+	local python3_path=$(which python3)
+	local target_file = "$HOME/.config/nvim/lua/option.lua"
+	if [[ ! -f $target_file ]]; then
+		error "Not Installed dotfiles"
+		exit 1
+	fi
+
+	sed -i -E "s|(vim\.g\.python3_host_prog = \").*\"|\1${python3_path}\"|" "$target_file"
+	info "Modified python3 path in nvim option.lua"
+}
+
 main() {
 	check_essential_commands
 	if is_wsl; then
@@ -134,7 +143,7 @@ main() {
 	install_third_paty_tools
 	install_dotfiles
 
+	modify_python3_path_in_nvim_option
+
 	completed "Completed install dev tools and dotfiles"
 }
-
-main
