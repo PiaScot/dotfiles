@@ -118,7 +118,6 @@ return {
                 bufmap("n", "gd", "<cmd>Lspsaga goto_definition<cr>")
                 bufmap("n", "gy", "<cmd>Lspsaga finder<cr>")
                 bufmap("n", "gr", "<cmd>Lspsaga rename<cr>")
-                bufmap("n", "\\t", "<cmd>Lspsaga term_toggle<cr>")
                 bufmap("n", "\\o", "<cmd>Lspsaga outline<cr>")
 
                 bufmap("n", "<C-k>", "<cmd>Lspsaga diagnostic_jump_prev<cr>")

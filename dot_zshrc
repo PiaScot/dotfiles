@@ -42,7 +42,7 @@ alias nvimrc='nvim ~/.config/nvim/init.lua'
 alias toml='nvim ~/.config/nvim/lua/plugins.lua'
 alias pvenv='python3 -m venv'
 alias pdb='python3 -m pdb'
-alias pypro="python3 -m venv venv && echo \"source venv/bin/activate\nunset PS1\" > .envrc && direnv allow ."
+alias pypro='init_python_project'
 alias cr='cargo run'
 alias cb='cargo build'
 alias ct='cargo test'
@@ -52,7 +52,7 @@ alias gmd='go mod tidy'
 alias gopro='init_go_project'
 
 eval "$(zoxide init zsh)"
-# eval "$(direnv hook zsh)"
+eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
 # eval "$(dircolors -b ~/.dircolors)"
 eval "$(gh completion -s zsh)"
@@ -65,6 +65,20 @@ change_history_directory() {
 
 zle -N change_history_directory
 bindkey '^f' change_history_directory
+
+init_python_project() {
+    if [[ $# -ne 1 ]]; then
+        echo "Specify name you wanna make go project"
+        return i
+    fi
+
+    local name=$1
+    mkdir $name
+    cd $name
+    python3 -m venv venv
+    echo "source venv/bin/activate\nunset PS1" > .envrc
+    direnv allow .
+}
 
 init_go_project() {
     if [[ $# -ne 1 ]]; then
