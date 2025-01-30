@@ -101,7 +101,7 @@ apt_install_packages() {
 	pkgs=(
 		"build-essential" "zsh" "fd-find" "ripgrep" "eza"
 		"zip" "rar" "jq" "fzf" "gh" "cmake" "mold" "libssl-dev"
-		"direnv" "python3-pip" "python3-venv"
+		"direnv" "python3-pip" "python3-venv" "wslu"
 	)
 }
 
