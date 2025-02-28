@@ -103,14 +103,24 @@ apt_install_packages() {
 		"zip" "rar" "jq" "fzf" "gh" "cmake" "mold" "libssl-dev"
 		"direnv" "python3-pip" "python3-venv" "wslu" "sqlite3"
 	)
+	# can use latest version vi-mise use registory
+	# fd, jq, fzf, gh, direnv, jq, neovim, mold, mysql, pandoc,
+	# pnpm, python, ripgrep, rga, starship, tokei, tmux,
+	# zoxide
 }
 
 install_third_paty_tools() {
+	# zoxide
 	curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+	# starship
 	curl -sS https://starship.rs/install.sh | sh
+	# mise
 	curl https://mise.run | sh
+	# neovim latest stable package
 	curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
 	sudo rm -rf /opt/nvim && sudo tar -C /opt -xzf nvim-linux64.tar.gz && rm -rf ./nvim-linux64.tar.gz
+	# pnpm instead of npm
+	curl -fsSL https://get.pnpm.io/install.sh | sh -
 
 }
 

@@ -2,99 +2,113 @@ return {
     "neovim/nvim-lspconfig",
     dependencies = {
         "hrsh7th/nvim-cmp",
-        "williamboman/mason.nvim",
-        "jay-babu/mason-nvim-dap.nvim",
-        "jay-babu/mason-null-ls.nvim",
-        "folke/neodev.nvim",
-        "williamboman/mason-lspconfig.nvim",
-        "stevearc/dressing.nvim",
-        "nvimdev/lspsaga.nvim",
+        {
+            "williamboman/mason.nvim",
+            config = function()
+                require("mason").setup({
+                    ui = {
+                        border = "single",
+                        icons = {
+                            package_installed = "✓",
+                            package_pending = "➜",
+                            package_uninstalled = "✗",
+                        },
+                    },
+                })
+            end,
+        },
+        {
+            "folke/neodev.nvim",
+            config = true,
+        },
+        {
+            "williamboman/mason-lspconfig.nvim",
+            config = function()
+                require("mason-lspconfig").setup({
+                    ensure_installed = {
+                        "pyright",
+                        "lua_ls",
+                        "tailwindcss",
+                        "ts_ls",
+                        "gopls",
+                        "rust_analyzer",
+                        "biome",
+                        "svelte",
+                        "clangd",
+                        "denols",
+                        "typos_lsp",
+                    },
+                    automatic_installation = true,
+                })
+            end,
+        },
+
+        {
+            "stevearc/dressing.nvim",
+            config = true,
+        },
+        {
+            "nvimdev/lspsaga.nvim",
+            config = function()
+                require("lspsaga").setup({
+                    ui = {},
+                    lightbulb = {
+                        enable = false,
+                    },
+                    outline = {
+                        win_width = 50,
+                    },
+                })
+            end,
+        },
+        {
+            "jay-babu/mason-null-ls.nvim",
+            dependencies = {
+                "williamboman/mason.nvim",
+            },
+        },
     },
     config = function()
         local lspconfig = require("lspconfig")
-        local util = lspconfig.util
-        local cmp_nvim_lsp = require("cmp_nvim_lsp")
-
         require("lspconfig.ui.windows").default_options.border = "single"
-        require("neodev").setup({})
-        require("dressing").setup({})
-        require("lspsaga").setup({
-            ui = {},
-            lightbulb = {
-                enable = false,
-            },
-            outline = {
-                win_width = 50,
-            },
-        })
 
-        require("mason").setup({
-            ui = {
-                border = "single",
-                icons = {
-                    package_installed = "✓",
-                    package_pending = "➜",
-                    package_uninstalled = "✗",
-                },
-            },
-        })
-        require("mason-lspconfig").setup({
-            ensure_installed = {
-                "pyright",
-                "lua_ls",
-                "gopls",
-                "rust_analyzer",
-                "clangd",
-            },
-            automatic_installation = true,
-        })
-        require("mason-null-ls").setup({
-            ensure_installed = {
-                "stylua",
-                "shfmt",
-                "gofmt",
-                "gofumpt",
-                "goimports",
-            },
-            automatic_installation = true,
-        })
+        local capabilities = vim.lsp.protocol.make_client_capabilities()
+        -- capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+        -- capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-        local capabilities
-        do
-            local default_capabilities = vim.lsp.protocol.make_client_capabilities()
-            capabilities = {
-                offsetEncoding = "utf-8",
-                textDocument = {
-                    completion = {
-                        completionItem = {
-                            snippetSupport = true,
-                        },
-                    },
-                    codeAction = {
-                        resolveSupport = {
-                            properties = vim.list_extend(
-                                default_capabilities.textDocument.codeAction.resolveSupport.properties,
-                                {
-                                    "documentation",
-                                    "detail",
-                                    "additionalTextEdits",
-                                }
-                            ),
-                        },
-                    },
-                },
-            }
-        end
+        -- local capabilities = vim.tbl_deep_extend("force",
+        --     vim.lsp.protocol.make_client_capabilities(),
+        --     require('cmp_nvim_lsp').default_capabilities()
+        -- )
+        -- capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
 
-        util.default_config = vim.tbl_deep_extend("force", util.default_config, {
-            capabilities = vim.tbl_deep_extend(
-                "force",
-                vim.lsp.protocol.make_client_capabilities(),
-                cmp_nvim_lsp.default_capabilities(capabilities)
-            ),
-        })
 
-        -- require("mason-nvim-dap").setup({})
+        -- local capabilities
+        -- do
+        --     local default_capabilities = vim.lsp.protocol.make_client_capabilities()
+        --     capabilities = {
+        --         offsetEncoding = "utf-8",
+        --         textDocument = {
+        --             completion = {
+        --                 completionItem = {
+        --                     snippetSupport = true,
+        --                 },
+        --             },
+        --             codeAction = {
+        --                 resolveSupport = {
+        --                     properties = vim.list_extend(
+        --                         default_capabilities.textDocument.codeAction.resolveSupport.properties,
+        --                         {
+        --                             "documentation",
+        --                             "detail",
+        --                             "additionalTextEdits",
+        --                         }
+        --                     ),
+        --                 },
+        --             },
+        --         },
+        --     }
+        -- end
 
         vim.diagnostic.config({
             virtual_text = false,
@@ -102,16 +116,15 @@ return {
             underline = false,
             update_in_insert = false,
             severity_sort = false,
-            -- float = { border = "single" },
+            float = { border = "single" },
         })
-        -- vim.diagnostic.config = nil
 
         vim.api.nvim_create_autocmd("LspAttach", {
             desc = "LSP actions",
-            callback = function()
+            callback = function(ev)
                 local bufmap = function(mode, lhs, rhs)
-                    local opts = { buffer = true }
-                    vim.keymap.set(mode, lhs, rhs, opts)
+                    local bufopts = { noremap = true, silent = true, buffer = ev.buf }
+                    vim.keymap.set(mode, lhs, rhs, bufopts)
                 end
 
                 bufmap("n", "K", "<cmd>Lspsaga hover_doc<cr>")
@@ -125,29 +138,39 @@ return {
             end,
         })
 
-        vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-            border = "single",
+        vim.diagnostic.config({
+            signs = {
+                text = {
+                    [vim.diagnostic.severity.ERROR] = "✘",
+                    [vim.diagnostic.severity.WARN] = "",
+                    [vim.diagnostic.severity.HINT] = "",
+                    [vim.diagnostic.severity.INFO] = "",
+                },
+            },
         })
-
-        local sign = function(opts)
-            vim.fn.sign_define(opts.name, {
-                texthl = opts.name,
-                text = opts.text,
-                numhl = "",
-            })
-        end
-
-        sign({ name = "DiagnosticSignError", text = "✘" })
-        sign({ name = "DiagnosticSignWarn", text = "" })
-        sign({ name = "DiagnosticSignHint", text = "" })
-        sign({ name = "DiagnosticSignInfo", text = "" })
 
         require("mason-lspconfig").setup_handlers({
             function(name)
-                lspconfig[name].setup({})
+                lspconfig[name].setup({
+                    -- on_attach = function(_, bufnr)
+                    --     -- client.handlers["textDocument/publishDiagnostics"] = function() end
+                    --     -- client.server_capabilities.documentFormattingProvider = false
+                    --     vim.api.nvim_create_autocmd("BufWritePre", {
+                    --         buffer = bufnr,
+                    --         callback = function()
+                    --             vim.lsp.buf.code_action({
+                    --                 apply = true,
+                    --                 context = { only = { "quickfix" } }
+                    --             })
+                    --         end
+                    --     })
+                    -- end,
+                    capabilities = capabilities,
+                })
             end,
             ["lua_ls"] = function()
                 lspconfig.lua_ls.setup({
+                    capabilities = capabilities,
                     settings = {
                         Lua = {
                             completion = {
@@ -163,6 +186,12 @@ return {
                         },
                     },
                 })
+            end,
+            ["typos_lsp"] = function()
+                lspconfig.typos_lsp.setup({})
+            end,
+            ["biome"] = function()
+                lspconfig.biome.setup({})
             end,
             -- ["eslint"] = function()
             -- 	local nodePath = vim.fn.system("which node"):gsub("\n", "")

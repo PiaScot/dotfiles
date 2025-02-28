@@ -15,6 +15,8 @@ map("n", "sH", "<C-w>H", silent)
 map("n", "sL", "<C-w>L", silent)
 map("n", "sJ", "<C-w>J", silent)
 map("n", "sK", "<C-w>K", silent)
+map("n", "n", "nzz", silent)
+map("n", "N", "Nzz", silent)
 
 map("i", "jj", "<ESC>", silent)
 map("t", "JJ", "<C-\\><C-n>", silent)

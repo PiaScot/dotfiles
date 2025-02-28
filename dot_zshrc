@@ -50,6 +50,8 @@ alias ctp='cargo test -- --nocapture'
 alias gor='go run ./main.go'
 alias gmd='go mod tidy'
 alias gopro='init_go_project'
+alias v='nvim'
+alias code='/mnt/c/Tools/Code.exe'
 
 eval "$(zoxide init zsh)"
 eval "$(direnv hook zsh)"
@@ -92,4 +94,16 @@ init_go_project() {
     go mod init $name
 }
 
+open() {
+    /mnt/c/Windows/system32/cmd.exe /c start $(wslpath -w $1) 2> /dev/null
+}
+
 typeset -gU PATH
+
+# pnpm
+export PNPM_HOME="/home/plum/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
