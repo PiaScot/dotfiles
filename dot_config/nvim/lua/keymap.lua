@@ -34,8 +34,6 @@ map("n", "<A-7>", "<Cmd>BufferGoto 7<CR>", silent)
 map("n", "<A-8>", "<Cmd>BufferGoto 8<CR>", silent)
 map("n", "<A-9>", "<Cmd>BufferGoto 9<CR>", silent)
 map("n", "<A-0>", "<Cmd>BufferLast<CR>", silent)
-map("n", "<leader>bb", "<Cmd>BufferClose<CR>", silent)
-map("n", "<leader>bv", "<Cmd>BufferClose<CR>", silent)
 
 -- Excludes buffers from the tabline
 map("n", "<C-q>", "<Cmd>BufferClose<CR>", silent)

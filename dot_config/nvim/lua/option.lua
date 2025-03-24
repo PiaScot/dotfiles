@@ -17,12 +17,12 @@ vim.opt.updatetime = 300
 vim.opt.signcolumn = "yes:1"
 -- use space instead of tab
 vim.opt.expandtab = true
--- it treat 4 space as <TAB> in file
-vim.opt.tabstop = 4
--- it treat 4 space in editing file
-vim.opt.softtabstop = 4
--- it treat 4 space on indent
-vim.opt.shiftwidth = 4
+-- it treat 2 space as <TAB> in file
+vim.opt.tabstop = 2
+-- it treat 2 space in editing file
+vim.opt.softtabstop = 2
+-- it treat 2 space on indent
+vim.opt.shiftwidth = 2
 -- round shiftwidth x times in indent lines
 vim.opt.shiftround = true
 -- maximum show up complement pop up menu items
@@ -48,26 +48,27 @@ vim.o.synmaxcol = 1000
 vim.o.clipboard = "unnamedplus"
 
 if vim.fn.has("wsl") then
-    vim.g.clipboard = {
-        name = "wsl_clipboard",
-        copy = {
-            ["+"] = "/mnt/c/Tools/win32yank.exe -i",
-            ["*"] = "/mnt/c/Tools/win32yank.exe -i",
-        },
-        paste = {
-            ["+"] = "/mnt/c/Tools/win32yank.exe -o",
-            ["*"] = "/mnt/c/Tools/win32yank.exe -o",
-        },
-        cache_enabled = 0,
-    }
+  vim.g.clipboard = {
+    name = "wsl_clipboard",
+    copy = {
+      ["+"] = "/mnt/c/Tools/win32yank.exe -i",
+      ["*"] = "/mnt/c/Tools/win32yank.exe -i",
+    },
+    paste = {
+      ["+"] = "/mnt/c/Tools/win32yank.exe -o",
+      ["*"] = "/mnt/c/Tools/win32yank.exe -o",
+    },
+    cache_enabled = 0,
+  }
 end
 
 local autocmd = vim.api.nvim_create_autocmd
 
 -- not continue comment line
 autocmd("BufEnter", {
-    pattern = "*",
-    command = "set fo-=c fo-=r fo-=o",
+  pattern = "*",
+  -- command = "set fo-=c fo-=r fo-=o",
+  command = "set fo=jql",
 })
 
 -- autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
@@ -98,30 +99,30 @@ autocmd("BufEnter", {
 
 -- can close q key with under filetype
 autocmd("Filetype", {
-    pattern = {
-        "help",
-        "man",
-        "notify",
-        "lspinfo",
-        "null-ls-info",
-        "startuptime",
-        "TelescopePrompt",
-        "qf",
-    },
-    callback = function(event)
-        vim.bo[event.buf].buflisted = false
-        vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
-    end,
+  pattern = {
+    "help",
+    "man",
+    "notify",
+    "lspinfo",
+    "null-ls-info",
+    "startuptime",
+    "TelescopePrompt",
+    "qf",
+  },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = event.buf, silent = true })
+  end,
 })
 
 vim.api.nvim_create_autocmd(
-    { "BufRead", "BufNewFile" },
-    { pattern = "*/node_modules/*", command = "lua vim.diagnostic.disable(0)" }
+  { "BufRead", "BufNewFile" },
+  { pattern = "*/node_modules/*", command = "lua vim.diagnostic.disable(0)" }
 )
 
 vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-    pattern = { "*.md", "*.tex" },
-    command = "setlocal spell",
+  pattern = { "*.md", "*.tex" },
+  command = "setlocal spell",
 })
 
 -- VertSplit      xxx g
