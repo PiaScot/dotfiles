@@ -17,9 +17,31 @@ return {
 
       require("telescope").setup({
         defaults = {
+          vimgrep_arguments = {
+            'rg',
+            '--color=never',
+            '--no-heading',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+            '--no-ignore-vcs',
+          },
           mappings = {
             i = {
               ["<C-u>"] = false,
+            },
+          },
+        },
+        pickers = {
+          find_files = {
+            hidden = true,
+            no_ignore = true,
+            file_ignore_patterns = {
+              "node_modules",
+              ".ruff_cache",
+              ".git/",
+              ".mypy_cache",
             },
           },
         },

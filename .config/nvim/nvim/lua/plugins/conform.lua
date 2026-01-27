@@ -42,6 +42,7 @@ return {
         json = { "jq" },
         html = { "prettierd" },
         python = { "ruff " },
+        -- dart = { "dcm" },
         svelte = get_formatter,
         javascript = get_formatter,
         typescript = get_formatter,

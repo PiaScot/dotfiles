@@ -6,20 +6,16 @@ return {
     "hrsh7th/cmp-cmdline",
     "hrsh7th/cmp-nvim-lsp",
 
-    "onsails/lspkind.nvim",
     "hrsh7th/cmp-nvim-lsp-signature-help",
 
     "dcampos/nvim-snippy",
     "dcampos/cmp-snippy",
 
     "honza/vim-snippets",
-
-    "MeanderingProgrammer/render-markdown.nvim",
   },
   config = function()
     local cmp = require("cmp")
     local snippy = require("snippy")
-    local lspkind = require("lspkind")
 
     local has_words_before = function()
       local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -46,8 +42,8 @@ return {
         end,
       },
       window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
+        -- completion = cmp.config.window.bordered(),
+        -- documentation = cmp.config.window.bordered(),
         completion = cmp.config.window.bordered({
           border = "rounded",
           winhighlight = "Normal:CmpMenu,FloatBorder:CmpBorder,CursorLine:PmenuSel,Search:None",
@@ -95,30 +91,13 @@ return {
           -- c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
         }),
       }),
-      formatting = {
-        format = function(entry, vim_item)
-          -- if vim.tbl_contains({ "path" }, entry.source.name) then
-          --     local icon, hl_group = require("nvim-web-devicons").get_icon(entry:get_completion_item().label)
-          --     if icon then
-          --         vim_item.kind = icon
-          --         vim_item.kind_hl_group = hl_group
-          --         return vim_item
-          --     end
-          -- end
-          return lspkind.cmp_format({ with_text = false })(entry, vim_item)
-        end,
-      },
       sources = cmp.config.sources({
         { name = "nvim_lsp" },
         { name = "nvim_lsp_signature_help" },
         { name = "path" },
-        -- { name = "render-markdown" }, -- require "MeanderingProgrammer/render-markdown.nvim",
-        -- { name = 'luasnip' }, -- For luasnip users.
-        -- { name = 'ultisnips' }, -- For ultisnips users.
+        { name = "lazydev" },
+        { name = "lazydev" },
         { name = "snippy" }, -- For snippy users.
-        per_filetype = {
-          codecompanion = { "codecompanion" },
-        },
         -- { name = "buffer" },
       }, {
         { name = "buffer" },
