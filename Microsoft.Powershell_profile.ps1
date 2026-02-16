@@ -64,6 +64,7 @@ Set-PSReadlineKeyHandler -Chord Ctrl+f -ScriptBlock {
 Import-Module -Name Terminal-Icons
 
 # https://github.com/uutils/coreutils
+# !! YOU NEED RUN `winget install -e --id uutils.coreutils`
 @"
   arch, base32, base64, basename, cat, cksum, comm, cp, cut, date, df, dircolors, dirname,
   echo, env, expand, expr, factor, false, fmt, fold, hashsum, head, hostname, join, link, ln,
@@ -79,7 +80,7 @@ ForEach-Object {
     $cmd = $_
     if (Test-Path Alias:$cmd) { Remove-Item -Path Alias:$cmd }
     $fn = '$input | coreutils ' + $cmd + ' $args'
-    Invoke-Expression "function global:$cmd { $fn }" 
+    Invoke-Expression "function global:$cmd { $fn }"
 }
 
 # https://github.com/starship/starship
