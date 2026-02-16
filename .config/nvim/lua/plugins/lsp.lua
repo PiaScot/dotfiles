@@ -27,6 +27,7 @@ return {
 						"tailwindcss",
 						"gopls",
 						"rust_analyzer",
+						"jdtls",
 						-- "deno_ls",
 						"svelte",
 						"ts_ls",
@@ -37,7 +38,6 @@ return {
 						"gofumpt",
 						"goimports",
 						"prettierd",
-						-- "ruff", -- LSPに含まれるため重複させなくてもOK（入れても問題なし）
 						"biome",
 						"jq",
 

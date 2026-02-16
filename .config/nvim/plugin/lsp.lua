@@ -7,6 +7,15 @@ end)
 
 vim.lsp.enable(lspNames)
 
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+	-- 枠線の設定（お好みで）
+	border = "rounded",
+	-- フォーカス可能にするかどうか（trueだとウィンドウに入力できるが、falseの方が誤操作は減る）
+	focusable = true,
+	-- ★ ここが重要：ウィンドウを閉じるトリガーとなるイベント
+	close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+})
+
 vim.diagnostic.config({
 	virtual_text = false,
 	update_in_insert = false,
@@ -52,6 +61,20 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 		---]]
 
+		-- if client.supports_method("textDocument/formatting") then
+		-- 	vim.api.nvim_create_autocmd("BufWritePre", {
+		-- 		buffer = args.buf,
+		-- 		callback = function()
+		-- 			vim.lsp.buf.format({
+		-- 				bufnr = args.buf,
+		-- 				id = client.id,
+		-- 				-- タイムアウトを少し長めに設定（Flutterプロジェクトが巨大な場合のため）
+		-- 				timeout_ms = 2000,
+		-- 			})
+		-- 		end,
+		-- 	})
+		-- end
+
 		---[[ Lsp Keymaps
 		local nmap = function(keys, func, desc)
 			if desc then
@@ -74,10 +97,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 		-- Diagnostic
 		nmap("<C-k>", function()
-			vim.diagnostic.jump({ count = 1, float = true })
+			vim.diagnostic.jump({ count = -1, float = true })
 		end, "Goto next diagnostic")
 		nmap("<C-j>", function()
-			vim.diagnostic.jump({ count = -1, float = true })
+			vim.diagnostic.jump({ count = 1, float = true })
 		end, "Goto prev diagnostic")
 		vim.keymap.set("i", "<Alt-t>", vim.lsp.buf.signature_help, { buffer = args.buf })
 
