@@ -29,7 +29,7 @@ vim.opt.shiftround = true
 -- default show up as much as possible (0 variable)
 vim.opt.pumheight = 10
 -- Enables pseudo-transparency for the |popup-menu|. (default 0)
--- vim.opt.pumblend = 15
+vim.opt.pumblend = 15
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
 -- use 24-bit color in nvim
