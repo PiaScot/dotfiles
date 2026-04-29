@@ -46,7 +46,8 @@ vim.opt.list = false
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 -- don't syntax highlight lone line file
 vim.o.synmaxcol = 1000
-
+-- Defines the default border style of floating windows
+vim.o.winborder = "single"
 -- don't always use snack's animate plugin
 vim.g.snacks_animate = false
 
@@ -76,9 +77,9 @@ autocmd("BufEnter", {
 })
 
 -- autocmd({ "VimEnter", "WinEnter", "BufWinEnter" }, {
---     desc = "Highlight the cursor line in the active window",
---     pattern = "*",
---     command = "setlocal cursorline",
+-- 	desc = "Highlight the cursor line in the active window",
+-- 	pattern = "*",
+-- 	command = "setlocal cursorline",
 -- })
 
 -- autocmd("WinLeave", {
@@ -93,7 +94,8 @@ autocmd("BufEnter", {
 --     command = "highlight CursorLine guibg=NONE",
 -- })
 
-vim.api.nvim_create_autocmd("ColorScheme", {
+autocmd("ColorScheme", {
+	desc = "change split bar to visible color",
 	pattern = "*",
 	callback = function()
 		vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#cdcbe0", bg = "NONE" })
@@ -102,7 +104,8 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 })
 
 -- can close q key with under filetype
-autocmd("Filetype", {
+autocmd("FileType", {
+	desc = "can close the buffer only 'q' command",
 	pattern = {
 		"help",
 		"man",
@@ -120,12 +123,65 @@ autocmd("Filetype", {
 	end,
 })
 
-vim.api.nvim_create_autocmd(
-	{ "BufRead", "BufNewFile" },
-	{ pattern = "*/node_modules/*", command = "lua vim.diagnostic.disable(0)" }
-)
+-- autocmd({ "BufRead", "BufNewFile" }, {
+-- 	desc = "disable diagnostic reference source file",
+-- 	pattern = {
+-- 		-- javascript
+-- 		"*/node_modules/*",
+--
+-- 		-- dart with flutter
+-- 		"*/.pub-cache/*",
+-- 		"~/flutter/*",
+--
+-- 		-- python
+-- 		"*/.venv/*",
+-- 	},
+-- 	callback = function()
+-- 		vim.diagnostic.enable(false, { bufnr = 0 })
+-- 	end,
+-- })
 
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-	pattern = { "*.md", "*.tex" },
-	command = "setlocal spell",
+-- vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+-- 	pattern = { "*.md", "*.tex" },
+-- 	command = "setlocal spell",
+-- })
+
+-- autocmd("FileType", {
+-- 	pattern = { "rust", "svelte", "python" },
+-- 	callback = function()
+-- 		-- syntax highlighting, provided by Neovim
+-- 		vim.treesitter.start()
+-- 		-- folds, provided by Neovim
+-- 		-- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- 		-- vim.wo.foldmethod = "expr"
+-- 		-- indentation, provided by nvim-treesitter
+-- 		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+-- 	end,
+-- })
+
+local augroup = vim.api.nvim_create_augroup("treesitter_setup", { clear = true })
+
+autocmd("FileType", {
+	group = augroup,
+	pattern = { "*" },
+	callback = function(ctx)
+		local buf = ctx.buf
+		local max_filesize = 200 * 1024
+		local filename = vim.api.nvim_buf_get_name(buf)
+
+		local ok, stats = pcall(vim.uv.fs_stat, filename)
+		if ok and stats and stats.size > max_filesize then
+			return
+		end
+
+		local ts_started = pcall(vim.treesitter.start, buf)
+		if ts_started then
+			-- vim.wo.foldmethod = "expr"
+			-- vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+			pcall(function()
+				vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+			end)
+		end
+	end,
 })

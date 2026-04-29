@@ -1,4 +1,4 @@
--- vim.api.nvim_set_hl(0, "FloatBorder", { link = "NormalFloat" })
+vim.api.nvim_set_hl(0, "FloatBorder", { link = "NormalFloat" })
 return {
 	"folke/trouble.nvim",
 	opts = {

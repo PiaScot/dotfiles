@@ -1,5 +1,6 @@
 return {
 	"hrsh7th/nvim-cmp",
+	enabled = false,
 	dependencies = {
 		"hrsh7th/cmp-path",
 		"hrsh7th/cmp-buffer",
@@ -117,7 +118,6 @@ return {
 				{ name = "nvim_lsp" },
 				{ name = "nvim_lsp_signature_help" },
 				{ name = "path" },
-				{ name = "lazydev" },
 				{ name = "lazydev" },
 				{ name = "snippy" }, -- For snippy users.
 				-- { name = "buffer" },

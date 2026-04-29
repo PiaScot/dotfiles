@@ -73,15 +73,6 @@ return {
 			return vim.bo.filetype == "NvimTree"
 		end
 
-		-- 既存の条件とNvimTreeでないという条件を組み合わせる関数
-		local function combine_conditions(original_cond_fn)
-			if original_cond_fn == nil then
-				return not is_nvim_tree_active()
-			end
-			-- 元の条件がtrueの場合のみ、NvimTreeでないかのチェックも行う
-			return original_cond_fn() and (not is_nvim_tree_active())
-		end
-
 		-- コンポーネントを lualine_c (左側) に追加する修正版ヘルパー関数
 		local function ins_left(component_definition)
 			local comp = type(component_definition) == "string" and { component_definition } or component_definition

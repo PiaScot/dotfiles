@@ -76,5 +76,5 @@ return {
 			},
 		},
 	},
-	{ "stevearc/dressing.nvim", config = true },
+	-- { "stevearc/dressing.nvim", config = true },
 }

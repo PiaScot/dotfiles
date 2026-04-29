@@ -7,15 +7,6 @@ end)
 
 vim.lsp.enable(lspNames)
 
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-	-- 枠線の設定（お好みで）
-	border = "rounded",
-	-- フォーカス可能にするかどうか（trueだとウィンドウに入力できるが、falseの方が誤操作は減る）
-	focusable = true,
-	-- ★ ここが重要：ウィンドウを閉じるトリガーとなるイベント
-	close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-})
-
 vim.diagnostic.config({
 	virtual_text = false,
 	update_in_insert = false,
@@ -24,7 +15,6 @@ vim.diagnostic.config({
 	float = {
 		focusable = true,
 		style = "minimal",
-		border = "rounded",
 		source = true,
 		header = "",
 		prefix = "",
@@ -61,20 +51,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 		---]]
 
-		-- if client.supports_method("textDocument/formatting") then
-		-- 	vim.api.nvim_create_autocmd("BufWritePre", {
-		-- 		buffer = args.buf,
-		-- 		callback = function()
-		-- 			vim.lsp.buf.format({
-		-- 				bufnr = args.buf,
-		-- 				id = client.id,
-		-- 				-- タイムアウトを少し長めに設定（Flutterプロジェクトが巨大な場合のため）
-		-- 				timeout_ms = 2000,
-		-- 			})
-		-- 		end,
-		-- 	})
-		-- end
-
 		---[[ Lsp Keymaps
 		local nmap = function(keys, func, desc)
 			if desc then
@@ -84,7 +60,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 
 		nmap("K", function()
-			vim.lsp.buf.hover({ border = "rounded" })
+			vim.lsp.buf.hover({ border = "single" })
 		end, "Open hover")
 		nmap("gr", vim.lsp.buf.rename, "Rename")
 		nmap("gi", vim.lsp.buf.implementation, "Implementation")
@@ -115,3 +91,5 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		---]]
 	end,
 })
+
+vim.lsp.enable(lspNames)
