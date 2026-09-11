@@ -40,6 +40,7 @@ return {
 						"prettierd",
 						"biome",
 						"jq",
+						"google-java-format",
 
 						-- linter
 						-- "clippy"

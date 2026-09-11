@@ -91,5 +91,3 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		---]]
 	end,
 })
-
-vim.lsp.enable(lspNames)

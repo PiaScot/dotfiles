@@ -1,0 +1,4 @@
+# apt packages installed in addition to common.txt when
+# --profile desktop is selected. fontconfig provides `fc-cache`,
+# used by profiles/desktop.sh after installing Nerd Fonts.
+fontconfig

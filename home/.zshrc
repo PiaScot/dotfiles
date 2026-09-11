@@ -146,13 +146,7 @@ open() { /mnt/c/Windows/system32/cmd.exe /c start $(wslpath -w $1) 2> /dev/null 
 md() { [[ $# == 1 ]] && mkdir -p -- "$1" && cd -- "$1" }
 compdef _directories md
 
-change_history_directory() {
-  __zoxide_zi
-  zle reset-prompt
-}
-
-zle -N change_history_directory
-bindkey '^f' change_history_directory
+bindkey -s '^f' 'zi\n'
 
 pypro() {
     if [[ $# -ne 1 ]]; then

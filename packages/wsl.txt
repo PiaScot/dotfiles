@@ -1,0 +1,3 @@
+# apt packages installed in addition to common.txt when running
+# under WSL2. wslu provides WSL-specific utilities (wslpath, wslview, ...).
+wslu

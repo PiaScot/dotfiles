@@ -1,0 +1,20 @@
+# apt package names installed on every Ubuntu/Debian target
+# (WSL, native Ubuntu Desktop, Ubuntu Server). One package per line;
+# blank lines and lines starting with # are ignored.
+build-essential
+zsh
+fd-find
+ripgrep
+eza
+zip
+rar
+jq
+fzf
+gh
+cmake
+mold
+libssl-dev
+direnv
+python3-pip
+python3-venv
+sqlite3
