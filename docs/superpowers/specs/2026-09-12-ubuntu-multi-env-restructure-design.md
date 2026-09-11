@@ -150,6 +150,10 @@ dotfiles/
 る。実行前に対象パスを `backup.sh` に渡して退避してから symlink を張る。
 `--dry-run` で実行計画のみ表示。
 
+symlink 運用の日常的な使い方(差分確認、破壊的変更を安全に試す方法、
+`git worktree` による並行検証など)は
+[docs/symlink-workflow.md](../../symlink-workflow.md) にまとめる。
+
 ### `scripts/install.sh`(メインエントリ)
 
 フロー:
