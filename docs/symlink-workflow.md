@@ -8,7 +8,7 @@
 る方法をまとめる。nvim に限らず `home/` 以下のすべての設定(zsh, tmux,
 fish, htop, zellij, cargo)に同じ考え方が使える。
 
-## なぜ symlink なのか(復習)
+## なぜ symlink なのか
 
 - `~/.zshrc` を編集 → その場で `git diff` が「今の変更点」になる。
   コピー運用のように「repoへ反映し忘れる」ドリフトが起きない。

@@ -99,7 +99,7 @@ install_packages() {
 
 install_third_party_tools() {
 	if ((DRY_RUN)); then
-		info "[dry-run] would install zoxide, starship, mise, neovim (latest), pnpm"
+		info "[dry-run] would install zoxide, starship, neovim (latest), pnpm"
 		return 0
 	fi
 
@@ -108,9 +108,6 @@ install_third_party_tools() {
 
 	info "Installing starship"
 	curl -sS https://starship.rs/install.sh | sh -s -- -y
-
-	info "Installing mise"
-	curl https://mise.run | sh
 
 	info "Installing neovim (latest stable)"
 	local nvim_tarball="nvim-linux-x86_64.tar.gz"
@@ -157,6 +154,7 @@ main() {
 
 	install_packages "$PROFILE"
 	install_third_party_tools
+	"$SCRIPT_DIR/toolchains.sh" "${extra_args[@]}"
 
 	"$SCRIPT_DIR/restore.sh" "${extra_args[@]}"
 

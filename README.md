@@ -16,7 +16,7 @@ home/           # $HOMEへそのままミラー配置される実体(zsh, tmux, 
 windows-host/   # Windows側で使うもの(.wezterm.lua, PowerShellプロファイル)。Linux restoreの対象外
 packages/       # apt パッケージ一覧(common / desktop / wsl)
 profiles/       # インストール時にのみ分岐する処理(wsl / desktop / server)
-scripts/        # lib.sh, backup.sh, restore.sh, install.sh
+scripts/        # lib.sh, backup.sh, restore.sh, install.sh, toolchains.sh
 ```
 
 `home/` 以下は **symlink** で `$HOME` に配置される(コピーではない)。
@@ -36,6 +36,38 @@ WSL2 上で実行した場合は `is_wsl` の自動検出により `profiles/wsl
 追加で実行され、`/etc/wsl.conf` の設定と win32yank の配置
 (`/mnt/c/Tools/win32yank.exe`)が自動化される。
 
+`home/.zshrc` は [zsh4humans (z4h)](https://github.com/romkatv/zsh4humans)
+を前提としており、`home/.zshenv` がその自己ブートストラップ用ファイル。
+両方が symlink されて初めて `.zshrc` は動く。
+
+## 言語ツールチェイン(scripts/toolchains.sh)
+
+`home/.zshrc` の `path=(...)` と `*_HOME` 環境変数(`JAVA_HOME`,
+`/usr/local/go`, `$HOME/.cargo`, `$HOME/flutter`, `$PNPM_HOME`)は、対応する
+ツールが実際にインストールされていることを前提にしている。symlink するだけ
+ではこれらは入らないため、`scripts/install.sh` は最後に
+`scripts/toolchains.sh` を実行し、各ツールを**検証し、無ければ公式手順で導
+入**する。
+
+| ツール | 検証パス | 導入方法 |
+|---|---|---|
+| JDK 17 | `/usr/lib/jvm/java-17-openjdk-amd64` | `apt-get install openjdk-17-jdk` |
+| Go | `/usr/local/go` | 公式tarballを取得し `/usr/local` に展開 |
+| Rust | `~/.cargo/bin/cargo` | rustup公式インストーラ |
+| Flutter | `~/flutter/bin/flutter` | `git clone -b stable` |
+| Node.js | `node` コマンド | pnpm経由 (`pnpm env use --global lts`) |
+
+単体実行/確認のみ: `./scripts/toolchains.sh --dry-run`
+
+**Android SDK は自動導入しない。** ダウンロード時間とライセンス同意等が複雑
+なため、`$ANDROID_HOME` の有無を検出して警告するだけに留めている。必要な場
+合は手動でセットアップすること。
+
+`mise` は以前バイナリだけ導入されて実際には未使用だったため削除した。上記
+の通り、各ツールはハードコードされたパス(`.zshrc`側)に合わせて公式インス
+トーラで個別導入する方式を採用している(Flutterのmiseプラグインは
+archive済みで非推奨のため)。
+
 ## Windows Terminal / wezterm
 
 - ColorScheme
@@ -53,9 +85,9 @@ Windows のプロファイル配置先へコピーされる(参考実装。Windo
 `./setup.sh --profile desktop` を実行すると、以下の Nerd Fonts が
 `~/.local/share/fonts` に自動導入される(`profiles/desktop.sh`)。
 
-- [GoMono Nerd Font](https://github.com/ryanoasis/nerd-fonts/releases/latest/Go-Mono.zip)
-- [IosevkaTerm Slab Font](https://github.com/ryanoasis/nerd-fonts/releases/latest/IosevkaTermSlab.zip)
-- [UDEV Gothic](https://github.com/yuru7/udev-gothic)
+- [GoMono Nerd Font](https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Go-Mono.zip)
+- [IosevkaTerm Slab Font](https://github.com/ryanoasis/nerd-fonts/releases/latest/download/IosevkaTermSlab.zip)
+- [UDEV Gothic](https://github.com/yuru7/udev-gothic/releases/latest)(リリースファイル名がバージョン付きのため自動導入対象外。手動で導入)
 
 Server profile ではフォント導入は行わない(SSH 接続元の端末でレンダリング
 されるため不要)。

@@ -68,6 +68,7 @@ require_os_ubuntu_debian() {
 managed_targets() {
 	local root="$1"
 	printf '%s\t%s\n' "$root/home/.zshrc" "$HOME/.zshrc"
+	printf '%s\t%s\n' "$root/home/.zshenv" "$HOME/.zshenv"
 	printf '%s\t%s\n' "$root/home/.tmux.conf" "$HOME/.tmux.conf"
 
 	local entry name

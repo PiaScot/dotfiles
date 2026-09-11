@@ -1,3 +1,4 @@
 tmp/
 home/.config/nvim/lazy-lock.json
 backups/
+qa.md
