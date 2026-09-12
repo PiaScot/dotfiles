@@ -18,3 +18,9 @@ direnv
 python3-pip
 python3-venv
 sqlite3
+chafa
+httpie
+tealdeer
+tree-sitter-cli
+lazygit
+zoxide

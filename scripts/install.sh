@@ -99,12 +99,10 @@ install_packages() {
 
 install_third_party_tools() {
 	if ((DRY_RUN)); then
-		info "[dry-run] would install zoxide, starship, neovim (latest), pnpm"
+		info "[dry-run] would install starship, neovim (latest), pnpm"
+		info "[dry-run] (zoxide now comes from packages/common.txt via apt)"
 		return 0
 	fi
-
-	info "Installing zoxide"
-	curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 
 	info "Installing starship"
 	curl -sS https://starship.rs/install.sh | sh -s -- -y
