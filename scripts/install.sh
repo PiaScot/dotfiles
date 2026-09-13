@@ -171,6 +171,11 @@ main() {
 	modify_python3_path_in_nvim_option
 
 	completed "Completed install of dev tools and dotfiles (profile: ${PROFILE})"
+
+	((DRY_RUN)) && return 0
+
+	info "Starting zsh..."
+	exec zsh
 }
 
 main "$@"

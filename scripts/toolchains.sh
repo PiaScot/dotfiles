@@ -144,6 +144,45 @@ check_node() {
 	pnpm env use --global lts
 }
 
+# Ubuntu's `nodejs` apt package does not bundle `npm` (26.04 ships it
+# split out, expecting corepack instead), and on WSL2 a `npm` found on
+# PATH can actually be the *Windows* npm leaking in via interop before
+# a `wsl.exe --shutdown` picks up profiles/wsl.sh's
+# appendWindowsPath=false. A Windows npm.exe operating on a Linux path
+# fails in confusing ways (EPERM creating .bin symlinks, "Could not
+# remove directory") -- exactly what mason.nvim hits installing LSP
+# servers. Provision a real native npm via corepack (already pulled in
+# as a nodejs dependency) rather than relying on whatever `npm`
+# resolves to.
+check_npm() {
+	local npm_path
+	npm_path="$(command -v npm 2>/dev/null || true)"
+
+	if [[ -n "$npm_path" && "$npm_path" != /mnt/* ]]; then
+		info "npm already installed ($npm_path, $(npm --version 2>/dev/null))"
+		return 0
+	fi
+
+	if [[ -n "$npm_path" ]]; then
+		warn "npm resolves to '$npm_path' -- that's Windows' npm leaking in via WSL interop (appendWindowsPath=false won't take effect until the WSL instance is restarted: run 'wsl.exe --shutdown' from Windows, then reopen). Provisioning a native npm via corepack in the meantime."
+	else
+		info "npm not found (this Ubuntu release's nodejs package doesn't bundle it); provisioning via corepack"
+	fi
+
+	if ! has corepack; then
+		warn "corepack not found either; install Node.js via a method that includes npm, or install corepack manually"
+		return 0
+	fi
+
+	if ((DRY_RUN)); then
+		info "[dry-run] would run: sudo corepack enable"
+		return 0
+	fi
+
+	sudo corepack enable
+	info "Enabled corepack (provides a native npm/pnpm/yarn)"
+}
+
 # Intentionally not installed: large, slow, and requires interactive
 # license acceptance. Just reports whether it's already there.
 check_android_sdk() {
@@ -161,6 +200,7 @@ check_go
 check_rust
 check_flutter
 check_node
+check_npm
 check_android_sdk
 
 ((DRY_RUN)) || completed "Toolchain check complete"
