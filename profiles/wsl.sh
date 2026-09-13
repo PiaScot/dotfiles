@@ -67,8 +67,18 @@ EOF
 	# first so re-running this script is idempotent.
 	sudo chattr -i "$resolv_conf" 2>/dev/null || true
 	printf '%s\n' "$content" | sudo tee "$resolv_conf" >/dev/null
-	sudo chattr +i "$resolv_conf"
-	info "Wrote $resolv_conf and marked it immutable"
+
+	# /etc/resolv.conf is often a symlink into /mnt/wsl (tmpfs) on WSL2;
+	# chattr's ioctl isn't supported on tmpfs at all ("Operation not
+	# supported"), so this is best-effort hardening, not required --
+	# generateResolvConf=false above is what actually prevents WSL from
+	# overwriting the file on the next launch. Don't let this fail the
+	# whole install.
+	if sudo chattr +i "$resolv_conf" 2>/dev/null; then
+		info "Wrote $resolv_conf and marked it immutable"
+	else
+		warn "Wrote $resolv_conf, but chattr +i isn't supported on its filesystem (common when /etc/resolv.conf -> /mnt/wsl/resolv.conf on tmpfs); generateResolvConf=false in wsl.conf still prevents it being overwritten after the next WSL restart"
+	fi
 }
 
 install_win32yank() {
