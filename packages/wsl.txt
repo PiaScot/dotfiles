@@ -1,3 +1,11 @@
 # apt packages installed in addition to common.txt when running
-# under WSL2. wslu provides WSL-specific utilities (wslpath, wslview, ...).
-wslu
+# under WSL2.
+#
+# wslu used to be listed here (WSL-specific utilities: wslview,
+# wslsys, wslvar, ...), but the upstream project is discontinued and
+# archived, and it's gone from Ubuntu 26.04 (resolute)'s archives too
+# (confirmed live: `apt-cache search wslu` returns nothing even with
+# universe/multiverse enabled). Nothing in this repo depends on it --
+# `wslpath`, used by home/.zshrc's `open()` alias, is a WSL interop
+# builtin, not part of the wslu package. Currently empty; add
+# WSL-only apt packages here if a real need comes up.
