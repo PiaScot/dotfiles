@@ -68,7 +68,7 @@ export LESS='-g -i -M -R -S -w -X -z-4 -j5'
 export VISUAL='nvim'
 export EDITOR='nvim'
 export NVIM_HOME='/opt/nvim-linux-x86_64'
-export PNPM_HOME="/home/plum/.local/share/pnpm"
+export PNPM_HOME="$HOME/.local/share/pnpm"
 export ANDROID_HOME=$HOME/Android/SDK
 export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 # Source additional local files if they exist.

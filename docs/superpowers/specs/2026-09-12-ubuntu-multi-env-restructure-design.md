@@ -2,7 +2,7 @@
 
 - Status: Approved (design), pending implementation plan
 - Date: 2026-09-12
-- Scope owner: PiaScot (crcrunchypp0215@gmail.com)
+- Scope owner: PiaScot
 
 ## 背景・目的
 
