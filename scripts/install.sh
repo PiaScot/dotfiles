@@ -60,7 +60,11 @@ esac
 extra_args=()
 ((DRY_RUN)) && extra_args+=(--dry-run)
 
-essential_commands=(zip unzip curl gzip wget chattr chsh tar sudo)
+# Only tools genuinely needed before apt can install anything else.
+# zip/unzip are deliberately NOT here: they're apt-installed by this
+# same script (packages/common.txt) rather than assumed pre-existing --
+# a minimal Ubuntu Server image doesn't ship them.
+essential_commands=(curl gzip wget chattr chsh tar sudo)
 check_essential_commands() {
 	local missing_count=0
 	local cmd
