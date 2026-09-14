@@ -51,10 +51,13 @@ vim.o.winborder = "single"
 -- don't always use snack's animate plugin
 vim.g.snacks_animate = false
 
-vim.o.clipboard = "unnamedplus"
 if vim.fn.has("wsl") == 1 then
 	-- WSL: bridge to the Windows clipboard via win32yank (see
 	-- profiles/wsl.sh, which installs it to /mnt/c/Tools/win32yank.exe).
+	-- This is a fast, local .exe call (no network round-trip), so
+	-- aliasing the unnamed register to it is fine: every plain y/p
+	-- behaves like normal desktop copy/paste with no added latency.
+	vim.o.clipboard = "unnamedplus"
 	vim.g.clipboard = {
 		name = "wsl_clipboard",
 		copy = {
@@ -67,7 +70,11 @@ if vim.fn.has("wsl") == 1 then
 		},
 		cache_enabled = 0,
 	}
-elseif vim.fn.executable("xclip") == 0 and vim.fn.executable("xsel") == 0 and vim.fn.executable("wl-copy") == 0 then
+elseif vim.fn.executable("xclip") == 1 or vim.fn.executable("xsel") == 1 or vim.fn.executable("wl-copy") == 1 then
+	-- A local GUI clipboard tool exists: also fast/local, let Neovim's
+	-- own built-in detection pick the right one automatically.
+	vim.o.clipboard = "unnamedplus"
+else
 	-- No GUI clipboard tool, and none would help anyway on a headless
 	-- server with no X/Wayland display to talk to (e.g. a plain-SSH
 	-- Ubuntu Server box like god77). Fall back to OSC52: the terminal
@@ -75,13 +82,21 @@ elseif vim.fn.executable("xclip") == 0 and vim.fn.executable("xsel") == 0 and vi
 	-- (local) clipboard, so this works over SSH with no display and no
 	-- extra packages -- it just needs an OSC52-capable terminal on the
 	-- connecting end (most modern ones, including Windows Terminal and
-	-- WezTerm, are). Setting `clipboard=unnamedplus` above stops
-	-- Neovim's own automatic OSC52 detection from kicking in, so it's
-	-- configured explicitly here instead of relying on that.
+	-- WezTerm, are).
 	--
-	-- Paste-back (remote nvim reading the local clipboard) may not work
-	-- in every terminal: some intentionally disable OSC52 "read" for
-	-- security even when "write" (copy) is enabled.
+	-- Deliberately NOT setting clipboard=unnamedplus here. Unlike
+	-- win32yank/xclip above, OSC52 is a real network round-trip
+	-- through terminal/tmux, and *paste* specifically has to wait for
+	-- the terminal to respond (some even prompt the user for
+	-- permission first) -- Neovim's own docs note the long timeout on
+	-- this is intentional. With unnamedplus, that round-trip would run
+	-- on every plain `y`/`p` anywhere (including inside a normal file
+	-- buffer, not just :terminal), which is what caused the
+	-- intermittent "waiting for OSC 52 response" stalls. Leaving
+	-- `clipboard` unset keeps plain y/p on Neovim's fast internal
+	-- register as usual; only explicit "+y / "+p go through OSC52, so
+	-- the occasional wait only happens when you actually asked for a
+	-- cross-machine copy/paste.
 	local osc52 = require("vim.ui.clipboard.osc52")
 	vim.g.clipboard = {
 		name = "OSC 52",
