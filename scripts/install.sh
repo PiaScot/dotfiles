@@ -207,12 +207,14 @@ modify_python3_path_in_nvim_option() {
 		warn "python3 not found; skipping python3_host_prog update"
 		return 0
 	fi
-	if [[ ! -f "$target_file" ]]; then
-		warn "Not installed yet (missing $target_file); skipping python3_host_prog update"
+
+	if ((DRY_RUN)); then
+		info "[dry-run] would set vim.g.python3_host_prog to '$python3_path' in $target_file (once restore.sh has actually symlinked it)"
 		return 0
 	fi
-	if ((DRY_RUN)); then
-		info "[dry-run] would set vim.g.python3_host_prog to '$python3_path' in $target_file"
+
+	if [[ ! -f "$target_file" ]]; then
+		warn "Not installed yet (missing $target_file); skipping python3_host_prog update"
 		return 0
 	fi
 
