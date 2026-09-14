@@ -88,6 +88,27 @@ managed_targets() {
 	fi
 }
 
+# The [interop]/[network] block written to /etc/wsl.conf. Shared so
+# scripts/install.sh's early PATH-sanity gate and profiles/wsl.sh's
+# full WSL setup can't drift apart.
+wsl_conf_content() {
+	cat <<'EOF'
+[interop]
+appendWindowsPath=false
+
+[network]
+generateResolvConf=false
+EOF
+}
+
+# True if $PATH currently contains a Windows-side directory
+# (/mnt/<drive>/...). WSL only re-reads wsl.conf on restart, not live,
+# so this can be true even after appendWindowsPath=false has been
+# written -- it just hasn't taken effect yet in the current session.
+path_has_windows_entries() {
+	printf '%s' "$PATH" | tr ':' '\n' | grep -qE '^/mnt/[a-zA-Z]/'
+}
+
 # Reads a packages/*.txt file (one package per line, '#' comments and
 # blank lines skipped) and prints the package names, one per line.
 read_package_list() {

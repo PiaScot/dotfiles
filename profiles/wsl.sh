@@ -25,15 +25,7 @@ done
 configure_wsl_conf() {
 	local wsl_conf="/etc/wsl.conf"
 	local content
-	content="$(
-		cat <<'EOF'
-[interop]
-appendWindowsPath=false
-
-[network]
-generateResolvConf=false
-EOF
-	)"
+	content="$(wsl_conf_content)"
 
 	if ((DRY_RUN)); then
 		info "[dry-run] would write $wsl_conf:"

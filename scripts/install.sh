@@ -80,6 +80,78 @@ check_essential_commands() {
 	fi
 }
 
+# On WSL, a leaked Windows PATH (npm.exe, node.exe, git.exe, ... via
+# interop) silently corrupts this install: apt/toolchain steps would
+# still work, but anything shelling out to `npm`/`node`/etc. later
+# (mason.nvim being the concrete case that broke) can pick up the
+# Windows binary instead of the Linux one, and it fails in confusing
+# ways operating on a Linux path. So on WSL this install refuses to
+# proceed until appendWindowsPath=false is both configured AND has
+# actually taken effect (WSL only applies wsl.conf on restart, not
+# live -- writing the file is not enough by itself).
+ensure_wsl_windows_path_disabled() {
+	is_wsl || return 0
+
+	local wsl_conf="/etc/wsl.conf"
+	local configured=0
+	if [[ -f "$wsl_conf" ]] && grep -q "appendWindowsPath=false" "$wsl_conf" 2>/dev/null; then
+		configured=1
+	fi
+
+	if ((!configured)); then
+		if ((DRY_RUN)); then
+			info "[dry-run] would write $wsl_conf with appendWindowsPath=false"
+		else
+			wsl_conf_content | sudo tee "$wsl_conf" >/dev/null
+			info "Wrote $wsl_conf (appendWindowsPath=false)"
+		fi
+	fi
+
+	if ((configured)) && ! path_has_windows_entries; then
+		info "WSL check OK: appendWindowsPath=false is active and \$PATH has no Windows entries"
+		return 0
+	fi
+
+	cat >&2 <<EOF
+
+################################################################################
+#  WSL restart required before this can continue                             #
+################################################################################
+
+  Windows' PATH (npm.exe, node.exe, git.exe, ...) is still visible from
+  inside this WSL distro. Installing with it present has caused broken
+  installs before (e.g. mason.nvim silently running Windows' npm.exe
+  instead of Linux's, which fails in confusing ways on a Linux path).
+
+  $(if ((configured)); then
+		echo "/etc/wsl.conf already has appendWindowsPath=false, but WSL only"
+		echo "  applies wsl.conf changes after a restart -- it hasn't taken"
+		echo "  effect in this session yet."
+	else
+		echo "/etc/wsl.conf has just been written with appendWindowsPath=false."
+	fi)
+
+  Next steps:
+    1. From a Windows PowerShell prompt (NOT inside WSL), run:
+
+         wsl.exe --shutdown
+
+    2. Reopen this Ubuntu terminal.
+    3. Re-run this exact command:
+
+         ./setup.sh --profile ${PROFILE}
+
+################################################################################
+
+EOF
+
+	if ((DRY_RUN)); then
+		warn "[dry-run] would stop here and require a WSL restart before continuing"
+		return 0
+	fi
+	exit 1
+}
+
 install_packages() {
 	local profile="$1"
 	local pkgs=()
@@ -151,6 +223,7 @@ modify_python3_path_in_nvim_option() {
 main() {
 	check_essential_commands
 	require_os_ubuntu_debian
+	ensure_wsl_windows_path_disabled
 
 	"$SCRIPT_DIR/backup.sh" "${extra_args[@]}"
 
