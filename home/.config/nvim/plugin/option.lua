@@ -53,6 +53,8 @@ vim.g.snacks_animate = false
 
 vim.o.clipboard = "unnamedplus"
 if vim.fn.has("wsl") == 1 then
+	-- WSL: bridge to the Windows clipboard via win32yank (see
+	-- profiles/wsl.sh, which installs it to /mnt/c/Tools/win32yank.exe).
 	vim.g.clipboard = {
 		name = "wsl_clipboard",
 		copy = {
@@ -64,6 +66,27 @@ if vim.fn.has("wsl") == 1 then
 			["*"] = "/mnt/c/Tools/win32yank.exe -o",
 		},
 		cache_enabled = 0,
+	}
+elseif vim.fn.executable("xclip") == 0 and vim.fn.executable("xsel") == 0 and vim.fn.executable("wl-copy") == 0 then
+	-- No GUI clipboard tool, and none would help anyway on a headless
+	-- server with no X/Wayland display to talk to (e.g. a plain-SSH
+	-- Ubuntu Server box like god77). Fall back to OSC52: the terminal
+	-- emulator itself receives the escape sequence and sets its own
+	-- (local) clipboard, so this works over SSH with no display and no
+	-- extra packages -- it just needs an OSC52-capable terminal on the
+	-- connecting end (most modern ones, including Windows Terminal and
+	-- WezTerm, are). Setting `clipboard=unnamedplus` above stops
+	-- Neovim's own automatic OSC52 detection from kicking in, so it's
+	-- configured explicitly here instead of relying on that.
+	--
+	-- Paste-back (remote nvim reading the local clipboard) may not work
+	-- in every terminal: some intentionally disable OSC52 "read" for
+	-- security even when "write" (copy) is enabled.
+	local osc52 = require("vim.ui.clipboard.osc52")
+	vim.g.clipboard = {
+		name = "OSC 52",
+		copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+		paste = { ["+"] = osc52.paste("+"), ["*"] = osc52.paste("*") },
 	}
 end
 
