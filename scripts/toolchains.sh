@@ -145,15 +145,24 @@ check_node() {
 }
 
 # Ubuntu's `nodejs` apt package does not bundle `npm` (26.04 ships it
-# split out, expecting corepack instead), and on WSL2 a `npm` found on
-# PATH can actually be the *Windows* npm leaking in via interop before
-# a `wsl.exe --shutdown` picks up profiles/wsl.sh's
+# split out into its own `npm` apt package), and on WSL2 a `npm` found
+# on PATH can actually be the *Windows* npm leaking in via interop
+# before a `wsl.exe --shutdown` picks up profiles/wsl.sh's
 # appendWindowsPath=false. A Windows npm.exe operating on a Linux path
 # fails in confusing ways (EPERM creating .bin symlinks, "Could not
 # remove directory") -- exactly what mason.nvim hits installing LSP
-# servers. Provision a real native npm via corepack (already pulled in
-# as a nodejs dependency) rather than relying on whatever `npm`
-# resolves to.
+# servers.
+#
+# NOTE: this used to run `sudo corepack enable` instead of the apt
+# install below. That was wrong: corepack does not shim `npm` by
+# default (only pnpm/yarn), so it never actually fixed the missing
+# npm -- and its pnpm shim ends up earlier on $PATH than the real
+# standalone pnpm installed by install_third_party_tools, shadowing
+# it with a broken shim (its cached module is never fetched), which
+# is exactly the "Cannot find module .../corepack/pnpm/.../pnpm.cjs"
+# failure hit live on god77. Confirmed Ubuntu 26.04 has a plain `npm`
+# apt package (command-not-found even suggests it), so just install
+# that directly instead.
 check_npm() {
 	local npm_path
 	npm_path="$(command -v npm 2>/dev/null || true)"
@@ -164,23 +173,18 @@ check_npm() {
 	fi
 
 	if [[ -n "$npm_path" ]]; then
-		warn "npm resolves to '$npm_path' -- that's Windows' npm leaking in via WSL interop (appendWindowsPath=false won't take effect until the WSL instance is restarted: run 'wsl.exe --shutdown' from Windows, then reopen). Provisioning a native npm via corepack in the meantime."
+		warn "npm resolves to '$npm_path' -- that's Windows' npm leaking in via WSL interop (appendWindowsPath=false won't take effect until the WSL instance is restarted: run 'wsl.exe --shutdown' from Windows, then reopen). Installing a native npm via apt in the meantime."
 	else
-		info "npm not found (this Ubuntu release's nodejs package doesn't bundle it); provisioning via corepack"
-	fi
-
-	if ! has corepack; then
-		warn "corepack not found either; install Node.js via a method that includes npm, or install corepack manually"
-		return 0
+		info "npm not found (this Ubuntu release's nodejs package doesn't bundle it); installing the npm apt package"
 	fi
 
 	if ((DRY_RUN)); then
-		info "[dry-run] would run: sudo corepack enable"
+		info "[dry-run] would run: sudo apt-get install -y npm"
 		return 0
 	fi
 
-	sudo corepack enable
-	info "Enabled corepack (provides a native npm/pnpm/yarn)"
+	sudo apt-get install -y npm
+	info "Installed npm via apt"
 }
 
 # Intentionally not installed: large, slow, and requires interactive
