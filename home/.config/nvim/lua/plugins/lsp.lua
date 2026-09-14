@@ -24,7 +24,7 @@ return {
 						"pyright",
 						"lua_ls",
 						"ruff",
-						"tailwindcss",
+						-- "tailwindcss",
 						"gopls",
 						"rust_analyzer",
 						"jdtls",
@@ -34,13 +34,13 @@ return {
 						"clangd",
 
 						-- formatter
+						"google-java-format",
 						"stylua",
 						"gofumpt",
 						"goimports",
 						"prettierd",
 						"biome",
 						"jq",
-						"google-java-format",
 
 						-- linter
 						-- "clippy"

@@ -59,6 +59,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.keymap.set("n", keys, func, { buffer = args.buf, noremap = true, silent = true, desc = desc })
 		end
 
+		-- affect on noice.lua hover settings
 		nmap("K", function()
 			vim.lsp.buf.hover({ border = "single" })
 		end, "Open hover")
@@ -91,3 +92,5 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		---]]
 	end,
 })
+
+vim.lsp.enable(lspNames)
