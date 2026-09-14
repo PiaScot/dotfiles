@@ -52,7 +52,7 @@ vim.o.winborder = "single"
 vim.g.snacks_animate = false
 
 vim.o.clipboard = "unnamedplus"
-if vim.fn.has("wsl") then
+if vim.fn.has("wsl") == 1 then
 	vim.g.clipboard = {
 		name = "wsl_clipboard",
 		copy = {
