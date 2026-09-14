@@ -41,8 +41,15 @@ return {
 		end,
 	},
 	{
-		"phaazon/hop.nvim",
-		branch = "v2",
+		-- phaazon/hop.nvim (the "v2" branch this used to pin) is gone
+		-- from GitHub -- it moved to sourcehut and the repo here was
+		-- deleted, which is why cloning it always failed with
+		-- "could not read Username for 'https://github.com'"
+		-- (GitHub returns 401, not 404, for a git-protocol request
+		-- against a repo that doesn't exist). smoka7/hop.nvim is the
+		-- actively maintained fork; its default branch is master, so
+		-- no `branch` override is needed.
+		"smoka7/hop.nvim",
 		keys = {
 			{ "f", "<cmd>HopChar1<cr>", desc = "Hop mode with f-press with normal mode" },
 		},
