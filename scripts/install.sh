@@ -224,15 +224,20 @@ print_ssh_clipboard_bridge_notice() {
   Windows side needs to be set up by hand, once, on the machine you
   connect FROM:
 
-  1. Copy windows-host/clipboard-bridge.ps1 from this repo to $HOME on
-     that Windows machine.
+  1. Copy windows-host/clipboard-bridge.ps1 AND
+     windows-host/clipboard-bridge-silent.vbs from this repo to $HOME
+     on that Windows machine.
 
-  2. Register it to start at every logon (PowerShell, admin not
-     required in testing so far -- if "Access is denied", retry from an
-     elevated PowerShell):
+  2. Register the .vbs (not pwsh.exe directly -- WindowStyle Hidden is
+     a documented no-op under Task Scheduler and leaves a visible
+     window, which on god77's Windows box also broke Ctrl+Shift IME
+     toggling in the actual SSH terminal for as long as it stayed
+     open) to start at every logon (PowerShell, admin not required in
+     testing so far -- if "Access is denied", retry from an elevated
+     PowerShell):
 
-       $action = New-ScheduledTaskAction -Execute "pwsh.exe" `
-           -Argument "-WindowStyle Hidden -File `"$HOME\clipboard-bridge.ps1`""
+       $action = New-ScheduledTaskAction -Execute "wscript.exe" `
+           -Argument "`"$HOME\clipboard-bridge-silent.vbs`""
        $trigger = New-ScheduledTaskTrigger -AtLogOn
        Register-ScheduledTask -TaskName "ClipboardBridge" -Action $action -Trigger $trigger
 
