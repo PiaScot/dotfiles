@@ -34,6 +34,17 @@ is_wsl() {
 	uname -r | grep -iq "wsl"
 }
 
+# True when this shell is an SSH session with no real X/Wayland display to
+# fall back on (headless server, or a desktop machine reached by plain SSH
+# without `-X` forwarding). Mirrors the condition in
+# home/.config/nvim/plugin/option.lua that switches Neovim's clipboard to
+# OSC52 + the TCP bridge (see docs/clipboard-bridge-design.md) -- this is
+# exactly the case where that bridge's Windows-host half needs to exist,
+# so install_ssh_clipboard_bridge_notice() below uses the same check.
+is_ssh_no_display() {
+	[[ -n "${SSH_TTY:-}${SSH_CONNECTION:-}" ]] && [[ -z "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]]
+}
+
 # Prints the distro ID from /etc/os-release (e.g. "ubuntu", "debian"),
 # or nothing if the file is missing.
 get_os_id() {

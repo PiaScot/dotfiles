@@ -198,6 +198,59 @@ install_third_party_tools() {
 	curl -fsSL https://get.pnpm.io/install.sh | sh -
 }
 
+# When this install is happening over SSH with no display to fall back
+# on, home/.config/nvim/plugin/option.lua switches Neovim's clipboard
+# paste ("+p / plain p) to a small TCP bridge instead of OSC52 (OSC52
+# read is refused by Windows Terminal/WezTerm, and not relayed by tmux
+# either -- see docs/clipboard-bridge-design.md for the full story).
+# That bridge's other half has to be set up by hand on the machine this
+# SSH connection is coming FROM, which this script has no access to, so
+# the best it can do is print what's needed and point at the file to
+# copy over. Purely informational -- never blocks the install.
+print_ssh_clipboard_bridge_notice() {
+	is_ssh_no_display || return 0
+
+	cat <<'EOF'
+
+################################################################################
+#  Clipboard paste ("+p / plain p) needs a one-time setup on the               #
+#  Windows machine you're SSHing in from                                       #
+################################################################################
+
+  This is an SSH session with no display, so Neovim's clipboard here uses
+  a small TCP bridge for paste (copy already works over OSC52 with no
+  extra setup). The bridge has two halves; this script only installed
+  the Linux side (home/.config/nvim/lua/clipboard_bridge.lua). The
+  Windows side needs to be set up by hand, once, on the machine you
+  connect FROM:
+
+  1. Copy windows-host/clipboard-bridge.ps1 from this repo to $HOME on
+     that Windows machine.
+
+  2. Register it to start at every logon (PowerShell, admin not
+     required in testing so far -- if "Access is denied", retry from an
+     elevated PowerShell):
+
+       $action = New-ScheduledTaskAction -Execute "pwsh.exe" `
+           -Argument "-WindowStyle Hidden -File `"$HOME\clipboard-bridge.ps1`""
+       $trigger = New-ScheduledTaskTrigger -AtLogOn
+       Register-ScheduledTask -TaskName "ClipboardBridge" -Action $action -Trigger $trigger
+
+  3. Add a RemoteForward for this host to that machine's SSH config
+     (%USERPROFILE%\.ssh\config), so the tunnel is set up automatically
+     on every connection:
+
+       Host <this host's alias>
+           RemoteForward 127.0.0.1:52599 127.0.0.1:52599
+
+  Full design, rationale, security notes, and troubleshooting:
+  docs/clipboard-bridge-design.md
+
+################################################################################
+
+EOF
+}
+
 modify_python3_path_in_nvim_option() {
 	local python3_path target_file
 	python3_path="$(command -v python3 || true)"
@@ -246,6 +299,8 @@ main() {
 	modify_python3_path_in_nvim_option
 
 	completed "Completed install of dev tools and dotfiles (profile: ${PROFILE})"
+
+	print_ssh_clipboard_bridge_notice
 
 	((DRY_RUN)) && return 0
 

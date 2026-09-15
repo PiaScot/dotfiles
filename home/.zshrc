@@ -83,6 +83,7 @@ path=(
   "$ANDROID_HOME/cmdline-tools/latest/bin"
   "$ANDROID_HOME/build-tools/36.1.0"
   "$ANDROID_HOME/platform-tools"
+  "/opt/nvim-linux-x86_64/bin"
   $path
 )
 

@@ -1,4 +1,10 @@
 # apt packages installed in addition to common.txt when
 # --profile desktop is selected. fontconfig provides `fc-cache`,
-# used by profiles/desktop.sh after installing Nerd Fonts.
+# used by profiles/desktop.sh after installing Nerd Fonts. xclip/
+# wl-clipboard back Neovim's system clipboard on a real GUI login (X11 and
+# Wayland respectively) -- without either, clipboard=unnamedplus in
+# home/.config/nvim/plugin/option.lua has nothing to talk to and every
+# yank/put just fails with "clipboard: No clipboard tool".
 fontconfig
+xclip
+wl-clipboard

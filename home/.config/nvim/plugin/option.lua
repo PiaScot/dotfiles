@@ -2,7 +2,7 @@ vim.g.do_filetype_lua = 1
 
 vim.g.python3_host_prog = "/usr/bin/python3"
 vim.opt.number = true
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 -- not distinguish search command(/) big character or small character
 vim.opt.ignorecase = true
 -- global statusline
@@ -51,7 +51,7 @@ vim.o.winborder = "single"
 -- don't always use snack's animate plugin
 vim.g.snacks_animate = false
 
-vim.o.clipboard = "unnamedplus"
+vim.opt.clipboard = "unnamedplus"
 if vim.fn.has("wsl") == 1 then
 	-- WSL: bridge to the Windows clipboard via win32yank (see
 	-- profiles/wsl.sh, which installs it to /mnt/c/Tools/win32yank.exe).
@@ -67,26 +67,74 @@ if vim.fn.has("wsl") == 1 then
 		},
 		cache_enabled = 0,
 	}
-elseif vim.fn.executable("xclip") == 0 and vim.fn.executable("xsel") == 0 and vim.fn.executable("wl-copy") == 0 then
-	-- No GUI clipboard tool, and none would help anyway on a headless
-	-- server with no X/Wayland display to talk to (e.g. a plain-SSH
-	-- Ubuntu Server box like god77). Fall back to OSC52: the terminal
-	-- emulator itself receives the escape sequence and sets its own
-	-- (local) clipboard, so this works over SSH with no display and no
-	-- extra packages -- it just needs an OSC52-capable terminal on the
-	-- connecting end (most modern ones, including Windows Terminal and
-	-- WezTerm, are). Setting `clipboard=unnamedplus` above stops
-	-- Neovim's own automatic OSC52 detection from kicking in, so it's
-	-- configured explicitly here instead of relying on that.
+elseif
+	(vim.env.SSH_TTY ~= nil or vim.env.SSH_CONNECTION ~= nil)
+	and (vim.env.DISPLAY == nil or vim.env.DISPLAY == "")
+	and (vim.env.WAYLAND_DISPLAY == nil or vim.env.WAYLAND_DISPLAY == "")
+then
+	-- SSH session with no real X/Wayland display to talk a local
+	-- clipboard tool through (e.g. a plain-SSH Ubuntu Server box like
+	-- god77, or SSHing into a Desktop-profile machine without `-X`
+	-- forwarding).
 	--
-	-- Paste-back (remote nvim reading the local clipboard) may not work
-	-- in every terminal: some intentionally disable OSC52 "read" for
-	-- security even when "write" (copy) is enabled.
+	-- Deliberately keyed on DISPLAY/WAYLAND_DISPLAY, not on whether
+	-- xclip/xsel/wl-copy are *installed*: the desktop profile does
+	-- install xclip + wl-clipboard (see packages/desktop.txt) for its
+	-- normal local GUI login, where this branch must NOT fire (Neovim's
+	-- own auto-detection already handles that case correctly, via a real
+	-- DISPLAY). Keying on executable() alone would wrongly skip this
+	-- branch on a Desktop machine reached by plain SSH (no forwarding):
+	-- xclip would be *present* but unable to reach any display, and
+	-- Neovim's own detection requires a real $DISPLAY before it will even
+	-- try xclip -- so with an executable()-only check, both this branch
+	-- and Neovim's fallback would decline, and clipboard=unnamedplus
+	-- (below) would leave `y`/`p` silently broken the same way the
+	-- desktop profile was broken before packages/desktop.txt got xclip.
+	--
+	-- The SSH_TTY/SSH_CONNECTION check matters too: both the OSC52 copy
+	-- below and clipboard_bridge.paste only make sense over an actual SSH
+	-- connection (OSC52 needs a terminal on the other end to receive the
+	-- escape sequence; the bridge only has anything to talk to when
+	-- Windows' RemoteForward tunnel exists, which is set up per-SSH-
+	-- session). Without this check, this branch would also fire for a
+	-- local login on god77's own console (no SSH, still no display) and
+	-- silently misbehave instead of falling through to Neovim's normal
+	-- "no clipboard tool" handling, which is the correct behavior there.
+	--
+	-- Copy ("y") uses OSC52: the terminal emulator itself receives the
+	-- escape sequence and sets its own (local) clipboard. Windows
+	-- Terminal and WezTerm both implement this write direction, so this
+	-- half works today with no extra moving parts. Setting
+	-- `clipboard=unnamedplus` above stops Neovim's own automatic OSC52
+	-- detection from kicking in, so it's configured explicitly here
+	-- instead of relying on that.
+	--
+	-- Paste ("+p / plain p, since clipboard=unnamedplus) can NOT use
+	-- OSC52 -- this was tried and is a dead end, not a bug to fix later:
+	--   - Windows Terminal (and WezTerm, and most modern terminals)
+	--     deliberately never answers an OSC52 *read* query -- letting a
+	--     remote program silently read the local clipboard is treated as
+	--     a security hole by their maintainers -- so this would just
+	--     hang for up to 10s and then time out, every single time.
+	--   - Inside tmux it's worse than a plain hang: tmux intercepts the
+	--     query itself and answers from its *own* paste-buffer list
+	--     instead of relaying whatever the real terminal holds (it never
+	--     forwards the terminal's answer back at all), so "+p could
+	--     silently insert unrelated old text some tmux pane copied
+	--     earlier instead of what was just Ctrl-C'd on Windows.
+	-- Full writeup, including why switching terminals/multiplexers
+	-- doesn't help either: docs/clipboard-bridge-design.md.
+	--
+	-- Instead, paste goes over a small dedicated TCP bridge
+	-- (clipboard_bridge.lua <-> windows-host/clipboard-bridge.ps1,
+	-- reached through the same ssh -R tunnel) that talks to the Windows
+	-- clipboard directly instead of asking the terminal to relay it.
 	local osc52 = require("vim.ui.clipboard.osc52")
+	local bridge = require("clipboard_bridge")
 	vim.g.clipboard = {
-		name = "OSC 52",
+		name = "OSC52 copy + TCP bridge paste",
 		copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
-		paste = { ["+"] = osc52.paste("+"), ["*"] = osc52.paste("*") },
+		paste = { ["+"] = bridge.paste, ["*"] = bridge.paste },
 	}
 end
 
